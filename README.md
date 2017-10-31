@@ -1,6 +1,6 @@
 # Baseline Code
 
-Hello world baseline code for Assignment 1
+Hello world baseline code for Assignment 2
 
 Begin by creating a branch of the Master, coordinate with your teammate to modify the code and merge pull requests.
 
