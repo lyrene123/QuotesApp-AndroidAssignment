@@ -8,7 +8,18 @@
     tools:context="cs.dawson.myapplication.MainActivity">
 
     <TextView
+        style="@style/textmain_style.categorytitle_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="@string/category_title" />
+    <TextView
+        style="@style/textmain_style.categorysubtitle_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/category_subtitle"/>
+    <ListView
+        android:id="@+id/listViewCat"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+    </ListView>
 </LinearLayout>

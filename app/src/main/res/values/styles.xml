@@ -8,13 +8,28 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="categorytxt_style">
-        <item name="android:textAlignment">center</item>
-        <item name="android:fontFamily">serif-monospace</item>
+    <style name="textmain_style.categorytxt_style">
         <item name="android:textAllCaps">true</item>
         <item name="android:paddingTop">10dp</item>
-        <item name="android:textStyle">bold</item>
         <item name="android:textSize">15dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="textmain_style.categorytitle_style">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">25dp</item>
+    </style>
+
+    <style name="textmain_style.categorysubtitle_style">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:textSize">12dp</item>
+    </style>
+
+    <style name="textmain_style">
+        <item name="android:fontFamily">serif-monospace</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>
