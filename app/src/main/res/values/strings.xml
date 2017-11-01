@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">QuotesPeterLyrene</string>
+    <string name="login_error_message">Problem with authentication</string>
+    <string name="login_error_title">Error!</string>
 </resources>
