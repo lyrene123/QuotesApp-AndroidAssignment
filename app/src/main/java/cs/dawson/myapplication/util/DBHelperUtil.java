@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs.dawson.myapplication.QuoteListActivity;
 import cs.dawson.myapplication.R;
 
 /**
@@ -36,8 +37,9 @@ import cs.dawson.myapplication.R;
  */
 public class DBHelperUtil {
 
-    //for the list of categories
+    //for the different list
     private List<String> categoriesList;
+    private List<String> quoteList;
     private CustomAdapter adapter;
 
     //for database access and authentication
@@ -64,8 +66,10 @@ public class DBHelperUtil {
      *
      * @param activity Activity that called this method
      * @param list ListView that will contain the list of categories
+     * @param retrieve String containing the data you want to retrieve from the database
      */
-    public void retrieveCategoriesFromDb(final Activity activity, final ListView list){
+    public void retrieveCategoriesFromDb(final Activity activity, final ListView list, final String retrieve,
+                                         final int categoryID, final String categoryTitle){
         //initialize the list of categories
         categoriesList = new ArrayList<>();
 
@@ -75,8 +79,16 @@ public class DBHelperUtil {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //load the main activity view containing the list view if successful
-                            loadCategoriesFromDb(list, activity);
+                            //if category names are the data you want to retrive
+                            if(retrieve.equalsIgnoreCase("category")) {
+                                loadCategoriesFromDb(list, activity);
+                            }
+
+                            //if the list of category short quotes are the data to retrieve
+                            if(retrieve.equalsIgnoreCase("quote_short")){
+                                loadCategoryShortQuoteFromDb(list, activity, categoryID,
+                                        categoryTitle);
+                            }
 
                         } else {
                             //display en error dialog box if authentication failed
@@ -85,6 +97,42 @@ public class DBHelperUtil {
                     }
                 });
     }
+
+    /**
+     *
+     * @param list
+     * @param activity
+     * @param categoryID
+     * @param categoryTitle
+     */
+    private void loadCategoryShortQuoteFromDb(ListView list, Activity activity, int categoryID,
+                                              String categoryTitle){
+        quoteList = new ArrayList<>();
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot item : dataSnapshot.getChildren()){
+                    addShortQuoteToList((String)item.child("quote_short").getValue());
+                    Log.d("QUOTES-QLActivity", "Quote-short item is: " +
+                            (String)item.child("quote_short").getValue());
+
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("QUOTES-QLActivity", "Failed to read value.", databaseError.toException());
+            }
+        };
+
+        mDatabase.child("quotes").child(categoryID+"").addValueEventListener(listener);
+
+        adapter = new CustomAdapter(activity, quoteList, "QuoteListActivity", categoryID, categoryTitle);
+        list.setAdapter(adapter);
+    }
+
 
     /**
      * Retrieves the list of categories from the database and instantiates the customer
@@ -162,6 +210,15 @@ public class DBHelperUtil {
      */
     private void addCategoryToList(String category){
         categoriesList.add(category);
+    }
+
+    /**
+     * Adds a short quote string into the list quotes
+     *
+     * @param shortQuote short quote to add to the list
+     */
+    private void addShortQuoteToList(String shortQuote){
+        quoteList.add(shortQuote);
     }
 
 

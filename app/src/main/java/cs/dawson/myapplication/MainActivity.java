@@ -69,6 +69,6 @@ public class MainActivity extends AppCompatActivity {
         ListView list = (ListView) findViewById(R.id.listViewCat);
 
         //retrieve and load the category names from the database into the list view
-        dbHelper.retrieveCategoriesFromDb(MainActivity.this, list);
+        dbHelper.retrieveCategoriesFromDb(MainActivity.this, list, "category", -1, "");
     }
 }
