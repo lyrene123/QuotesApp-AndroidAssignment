@@ -1,30 +1,37 @@
 package cs.dawson.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,9 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabase;
 
-    private String[] categoriesArr;
-    private ImageView[] categoriesImgArr;
-    private String[] imgSourceStr;
+    private List<String> categoriesArr;
+    private CategoryAdapter adapter;
 
 
     @Override
@@ -59,51 +65,47 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-
     }
 
     private void loadMainActivityView(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
         retrieveCategoriesFromDb();
-        loadCategoriesImgToImageViews();
+
+    }
+
+    public void addCategoryToList(String category){
+        categoriesArr.add(category);
+    }
+
+    //solution based on https://stackoverflow.com/questions/41434475/how-to-list-data-from-firebase-database-in-listview
+    private void retrieveCategoriesFromDb(){
+        categoriesArr = new ArrayList<>();
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot item : dataSnapshot.getChildren()){
+                    addCategoryToList((String)item.child("name").getValue());
+                    Log.d("QUOTES-MainActivity", "Category item is: " +
+                            (String)item.child("name").getValue());
+
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("QUOTES-MainActivity", "Failed to read value.", databaseError.toException());
+            }
+        };
+
+        mDatabase.child("categories").addValueEventListener(listener);
 
         ListView list = (ListView) findViewById(R.id.listViewCat);
-        list.setAdapter(new CategoryAdapter(this, categoriesArr, categoriesImgArr));
+        adapter = new CategoryAdapter(this, categoriesArr);
+        list.setAdapter(adapter);
     }
 
-    private void retrieveCategoriesFromDb(){
-        ArrayList<String> listCategories = new ArrayList<>();
-        ArrayList<String> listCategoriesImg = new ArrayList<>();
-
-        for(int i = 1; i < 6; i++){
-            String item = mDatabase.child("categories").child(i+"").child("name").toString();
-            String imgSrc = mDatabase.child("categories").child(i+"").child("image").toString();
-            listCategories.add(item);
-            listCategoriesImg.add(imgSrc);
-        }
-
-        imgSourceStr = (String[]) listCategoriesImg.toArray();
-        categoriesArr = (String[]) listCategories.toArray();
-    }
-
-    private void loadCategoriesImgToImageViews(){
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
-
-        ArrayList<ImageView> listCategoriesImg = new ArrayList<>();
-        for(int i = 0; i < 5; i++){
-            ImageView img = null;
-            StorageReference imgRef = storageReference.child(imgSourceStr[i]);
-
-            Glide.with(this)
-                    .using(new FirebaseImageLoader())
-                    .load(imgRef)
-                    .into(img);
-            listCategoriesImg.add(img);
-        }
-
-        categoriesImgArr = (ImageView[]) listCategoriesImg.toArray();
-    }
 
     private void displayErrorAuthentication(Task<AuthResult> task){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -114,58 +116,58 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-
     private class CategoryAdapter extends BaseAdapter {
         private Context context;
-        String [] categoriesArr;
-        ImageView[] categoriesImgArr;
-        LayoutInflater inflater;
+        private List<String> categoriesArr;
+        private LayoutInflater inflater;
 
-        public CategoryAdapter(Context c,
-                               String[] categoriesArr, ImageView[] categoriesImgArr) {
+        public CategoryAdapter(Context c, List<String> categoriesArr) {
             this.context = c;
             this.categoriesArr = categoriesArr;
-            this.categoriesImgArr = categoriesImgArr;
-            this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            this.inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
         public int getCount() {
-            return this.categoriesArr.length;
+            return this.categoriesArr.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return this.categoriesArr[i];
+            return this.categoriesArr.get(i);
         }
 
         @Override
         public long getItemId(int i) {
-            return 0;
-        }
-
-        public class ViewHolder {
-            TextView categoryTV; ImageView categoryImgView;
+            return i;
         }
 
         @Override
-        public View getView(final int position, View view, ViewGroup viewGroup) {
-            ViewHolder vh = new ViewHolder();
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            TextView tv;
             View row = view;
-
             if (view == null) {
-                row = inflater.inflate(R.layout.custom_category_list, null);
+                row = inflater.inflate(R.layout.category_custom_item, null);
 
-                vh.categoryTV = (TextView) row.findViewById(R.id.categoryTxt);
-                vh.categoryImgView = (ImageView) row.findViewById(R.id.categoryImg);
-                vh.categoryTV.setText(categoriesArr[position]);
-                vh.categoryImgView.setImageDrawable(categoriesImgArr[position].getDrawable());
-                row.setTag(vh);
+                tv = (TextView) row.findViewById(R.id.categoryTV);
+                tv.setText(categoriesArr.get(position));
+                row.setTag(tv);
             } else {
-                vh = (ViewHolder) view.getTag();
-                vh.categoryTV.setText(categoriesArr[position]);
-                vh.categoryImgView.setImageDrawable(categoriesImgArr[position].getDrawable());
+                tv = (TextView) view.getTag();
+                tv.setText(categoriesArr.get(position));
             }
+
+           /* row.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, DinoActivity.class);
+                    i.putExtra("dino_name", listDino[position]);
+                    i.putExtra("dino_info", listDinoInfos[position]);
+                    i.putExtra("dino_image", listIdDino[position]);
+                    context.startActivity(i);
+                }
+            });*/
 
             return row;
         }
