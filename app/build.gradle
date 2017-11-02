@@ -9,7 +9,8 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner
+        multiDexEnabled true     // pmc 2017-11-01
     }
     buildTypes {
         release {
@@ -26,10 +27,12 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.google.firebase:firebase-database:9.4.0'
-    compile 'com.google.firebase:firebase-auth:9.4.0'
+    compile 'com.google.firebase:firebase-database:11.4.2'      // pmc 2017-11-01
+    compile 'com.google.firebase:firebase-auth:11.4.2'      // pmc 2017-11-01
+    compile 'com.google.firebase:firebase-core:11.4.2'      // pmc 2017-11-01
     compile 'com.firebaseui:firebase-ui-storage:0.6.0'
     compile 'com.firebaseui:firebase-ui-auth:0.6.0'
+    compile 'com.google.firebase:firebase-crash:11.4.2'     // pmc 2017-11-01
     testCompile 'junit:junit:4.12'
 }
 
