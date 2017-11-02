@@ -42,6 +42,7 @@ public class QuoteListActivity extends Activity {
     private List<String> quoteList;
     private QuoteListAdapter adapter;
     private int categoryID;
+    private String categoryTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,8 @@ public class QuoteListActivity extends Activity {
         TextView categoryTitleTV = (TextView) findViewById(R.id.categoryTitleTV);
         if ( getIntent().hasExtra("category_name") != false &&
                 getIntent().getExtras().getString("category_name") != null) {
-            categoryTitleTV.setText(getIntent().getExtras().getString("category_name"));
+            categoryTitle = getIntent().getExtras().getString("category_name");
+            categoryTitleTV.setText(categoryTitle);
         }
 
         if ( getIntent().hasExtra("category_index") != false &&
@@ -152,7 +154,7 @@ public class QuoteListActivity extends Activity {
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
+        public View getView(final int position, View view, ViewGroup viewGroup) {
             TextView tv;
             View row = view;
             if (view == null) {
@@ -166,16 +168,17 @@ public class QuoteListActivity extends Activity {
                 tv.setText(quoteList.get(position));
             }
 
-           /* row.setOnClickListener(new View.OnClickListener() {
+            row.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(context, QuoteListActivity.class);
-                    i.putExtra("category_index", position);
-                    i.putExtra("category_name", categoriesArr.get(position));
+                    Intent i = new Intent(context, QuoteActivity.class);
+                    i.putExtra("category_index", categoryID+"");
+                    i.putExtra("quote_index", position+"");
+                    i.putExtra("category_title", categoryTitle);
                     context.startActivity(i);
                 }
-            });*/
+            });
 
             return row;
         }

@@ -4,4 +4,10 @@
     <string name="login_error_title">Error!</string>
     <string name="category_title">Categories</string>
     <string name="category_subtitle">Click on one of the following list items</string>
+    <string name="attributed">Attributed</string>
+    <string name="date_added">Date added</string>
+    <string name="birthdate">Date of Birth</string>
+    <string name="full_quote">Full Quote</string>
+    <string name="ref">Reference</string>
+    <string name="quote_title">Quote about</string>
 </resources>
