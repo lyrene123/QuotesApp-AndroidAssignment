@@ -10,9 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,152 +25,50 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import cs.dawson.myapplication.util.CustomAdapter;
+import cs.dawson.myapplication.util.DBHelperUtil;
+
+/**
+ * Displays to the user a list of category names that are retrieved from the
+ * firebase database. Uses the DbHelper class for firebase authentication
+ * in order to access the database. The DbHelper class will be able to
+ * populate the list view of the main activity. Items are loaded with the help of
+ * the custom adapter and a custom layout is used for each list item.
+ * A click event listeners is set up for each list item that will launch
+ * an intent to display the QuoteListActivity and display the list of quote.
+ *
+ * @author Lyrene Labor, Peter Bellefleur
+ */
 public class MainActivity extends AppCompatActivity {
 
-    private final String email = "user@droid.com";
-    private final String password = "iloveandroid";
-
-    private FirebaseAuth mFirebaseAuth;
-    private DatabaseReference mDatabase;
-
-    private List<String> categoriesArr;
-    private CategoryAdapter adapter;
+    //for DAO access methods
+    private DBHelperUtil dbHelper;
 
 
+    /**
+     * Sets the layout of the activity. Initializes the DBHelper instance
+     * to be used for the firebase authentication and retrieving the categories
+     * names. Retrieves the ListView object from the view that will contain
+     * the categories names. DBHelper will then load the categories into the
+     * list
+     *
+     * @param savedInstanceState Bundle object
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize FirebaseAuth
-        mFirebaseAuth = FirebaseAuth.getInstance();
+        //Initialize DBHelper object
+        dbHelper = new DBHelperUtil();
 
-        //sign in into firebase to retrieve data
-        mFirebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            loadMainActivityView();
-                        } else {
-                            displayErrorAuthentication(task);
-                        }
-                    }
-                });
-    }
-
-
-
-    private void loadMainActivityView(){
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        retrieveCategoriesFromDb();
-
-    }
-
-    public void addCategoryToList(String category){
-        categoriesArr.add(category);
-    }
-
-    //solution based on https://stackoverflow.com/questions/41434475/how-to-list-data-from-firebase-database-in-listview
-    private void retrieveCategoriesFromDb(){
-        categoriesArr = new ArrayList<>();
-
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot item : dataSnapshot.getChildren()){
-                    addCategoryToList((String)item.child("name").getValue());
-                    Log.d("QUOTES-MainActivity", "Category item is: " +
-                            (String)item.child("name").getValue());
-
-                    adapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("QUOTES-MainActivity", "Failed to read value.", databaseError.toException());
-            }
-        };
-
-        mDatabase.child("categories").addValueEventListener(listener);
-
+        //retrieve the ListView that will hold the list of categories
         ListView list = (ListView) findViewById(R.id.listViewCat);
-        adapter = new CategoryAdapter(this, categoriesArr);
-        list.setAdapter(adapter);
-    }
 
-
-    private void displayErrorAuthentication(Task<AuthResult> task){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage(task.getException().getMessage())
-                .setTitle(R.string.login_error_title)
-                .setPositiveButton(android.R.string.ok, null);
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private class CategoryAdapter extends BaseAdapter {
-        private Context context;
-        private List<String> categoriesArr;
-        private LayoutInflater inflater;
-
-        public CategoryAdapter(Context c, List<String> categoriesArr) {
-            this.context = c;
-            this.categoriesArr = categoriesArr;
-            this.inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public int getCount() {
-            return this.categoriesArr.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return this.categoriesArr.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(final int position, View view, ViewGroup viewGroup) {
-            TextView tv;
-            View row = view;
-            if (view == null) {
-                row = inflater.inflate(R.layout.category_custom_item, null);
-
-                tv = (TextView) row.findViewById(R.id.categoryTV);
-                tv.setText(categoriesArr.get(position));
-                row.setTag(tv);
-            } else {
-                tv = (TextView) view.getTag();
-                tv.setText(categoriesArr.get(position));
-            }
-
-            row.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(context, QuoteListActivity.class);
-                    i.putExtra("category_index", position+"");
-                    Log.d("QUOTES-MainActivity", "category position: " + position);
-                    i.putExtra("category_name", categoriesArr.get(position));
-                    Log.d("QUOTES-MainActivity", "category name: " + categoriesArr.get(position));
-                    context.startActivity(i);
-                }
-            });
-
-            return row;
-        }
+        //retrieve and load the category names from the database into the list view
+        dbHelper.retrieveCategoriesFromDb(MainActivity.this, list);
     }
 }
