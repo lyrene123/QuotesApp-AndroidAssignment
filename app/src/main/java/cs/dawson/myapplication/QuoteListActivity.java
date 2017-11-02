@@ -27,9 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by laborlyrene on 2017-11-01.
- */
+
 
 public class QuoteListActivity extends Activity {
 
