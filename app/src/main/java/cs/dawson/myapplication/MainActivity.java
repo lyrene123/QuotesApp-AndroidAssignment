@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+
+
     private void loadMainActivityView(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
         retrieveCategoriesFromDb();
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
+        public View getView(final int position, View view, ViewGroup viewGroup) {
             TextView tv;
             View row = view;
             if (view == null) {
@@ -157,17 +159,18 @@ public class MainActivity extends AppCompatActivity {
                 tv.setText(categoriesArr.get(position));
             }
 
-           /* row.setOnClickListener(new View.OnClickListener() {
+            row.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(context, DinoActivity.class);
-                    i.putExtra("dino_name", listDino[position]);
-                    i.putExtra("dino_info", listDinoInfos[position]);
-                    i.putExtra("dino_image", listIdDino[position]);
+                    Intent i = new Intent(context, QuoteListActivity.class);
+                    i.putExtra("category_index", position+"");
+                    Log.d("QUOTES-MainActivity", "category position: " + position);
+                    i.putExtra("category_name", categoriesArr.get(position));
+                    Log.d("QUOTES-MainActivity", "category name: " + categoriesArr.get(position));
                     context.startActivity(i);
                 }
-            });*/
+            });
 
             return row;
         }

@@ -3,5 +3,5 @@
     <string name="login_error_message">Problem with authentication</string>
     <string name="login_error_title">Error!</string>
     <string name="category_title">Categories</string>
-    <string name="category_subtitle">Click on a category to browse for quotes</string>
+    <string name="category_subtitle">Click on one of the following list items</string>
 </resources>
