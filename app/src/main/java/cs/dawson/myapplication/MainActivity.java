@@ -37,7 +37,7 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  * in order to access the database. The DbHelper class will be able to
  * populate the list view of the main activity. Items are loaded with the help of
  * the custom adapter and a custom layout is used for each list item.
- * A click event listeners is set up for each list item that will launch
+ * A click event listeners is set up by the DBHelper for each list item that will launch
  * an intent to display the QuoteListActivity and display the list of quote.
  *
  * @author Lyrene Labor, Peter Bellefleur

@@ -60,18 +60,20 @@ public class DBHelperUtil {
     }
 
     /**
-     * Retrieves the names of the categories only when the database authentication
-     * is successful. If not, a dialog will display with an error message letting the user know
+     * Retrieves the names of the categories or the short quotes of a category depending
+     * on the retrieve input String which indicates the type data we want to retrieve.
+     * But does database authentication first before retrieving any database records.
+     * If not, a dialog will display with an error message letting the user know
      * that an error has occurred
      *
      * @param activity Activity that called this method
      * @param list ListView that will contain the list of categories
      * @param retrieve String containing the data you want to retrieve from the database
+     * @param categoryID the id of the category that was selected and which to display the short quotes
+     * @param categoryTitle the name of the category that was selected and which to display short quotes
      */
     public void retrieveCategoriesFromDb(final Activity activity, final ListView list, final String retrieve,
                                          final int categoryID, final String categoryTitle){
-        //initialize the list of categories
-        categoriesList = new ArrayList<>();
 
         //sign in into firebase to retrieve categories
         mFirebaseAuth.signInWithEmailAndPassword(email, password)
@@ -99,20 +101,32 @@ public class DBHelperUtil {
     }
 
     /**
+     * Retrieves the short quotes of a particular category and loads them into a ListView with
+     * the help of a CustomAdapter object.
      *
-     * @param list
-     * @param activity
-     * @param categoryID
-     * @param categoryTitle
+     * @param list ListView in which to load the short quotes from the database
+     * @param activity The activity that invoked the method
+     * @param categoryID the id of the category that was selected and which to display the short quotes
+     * @param categoryTitle the name of the category that was selected and which to display short quotes
      */
     private void loadCategoryShortQuoteFromDb(ListView list, Activity activity, int categoryID,
                                               String categoryTitle){
+        //initialize the list of short quotes
         quoteList = new ArrayList<>();
 
+        //create the ValueEventListener listener object
         ValueEventListener listener = new ValueEventListener() {
+            /**
+             * Retrieves any changes made to the database. In our case
+             * this method will be called once at the beginning when
+             * retrieving the initial data.
+             *
+             * @param dataSnapshot DataSnapshot object data from db
+             */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot item : dataSnapshot.getChildren()){
+                    //add the retrieved data into the list of quotes
                     addShortQuoteToList((String)item.child("quote_short").getValue());
                     Log.d("QUOTES-QLActivity", "Quote-short item is: " +
                             (String)item.child("quote_short").getValue());
@@ -121,6 +135,11 @@ public class DBHelperUtil {
                 }
             }
 
+            /**
+             * onCancelled called when an error has occurred and the data cannot be retrieved
+             *
+             * @param databaseError DatabaseError containing the error that occured
+             */
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w("QUOTES-QLActivity", "Failed to read value.", databaseError.toException());
@@ -135,7 +154,7 @@ public class DBHelperUtil {
 
 
     /**
-     * Retrieves the list of categories from the database and instantiates the customer
+     * Retrieves the list of categories from the database and instantiates the custom
      * adapter in order to set the data retrieved into the ListView
      *
      * Solution based on :
@@ -145,6 +164,9 @@ public class DBHelperUtil {
      * @param activity Activity that called the method
      */
     private void loadCategoriesFromDb(ListView list, Activity activity){
+        //initialize the list of categories
+        categoriesList = new ArrayList<>();
+
         //create the ValueEventListener listener object
         ValueEventListener listener = new ValueEventListener() {
             /**
