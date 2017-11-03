@@ -33,7 +33,8 @@ import cs.dawson.myapplication.model.QuoteItem;
  * and loading them into a ListView with the help of a custom adapter.
  * Handles the retrieval as well of the short quotes from the firebase and loaded
  * into a ListView with a custom adapter for the QuoteListActivity. For the QuoteActivity,
- * handles the retrieval of all information of a particular quote of category.
+ * handles the retrieval of all information of a particular quote of category and data
+ * loaded into a model class.
  *
  *
  * @author Lyrene Labor, Peter Bellefleur
@@ -79,11 +80,9 @@ public class DBHelperUtil {
      *                   (for QuoteListActivity and QuoteActivity)
      * @param categoryTitle the name of the category that was selected and which to display short quotes
      *                      (for QuoteListActivity and QuoteActivity)
-     * @param textviews List of TextViews to display the quote info (For QuoteActivity)
      */
     public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String retrieve,
-                                      final int categoryID, final String categoryTitle, final int quoteID,
-                                      final List<TextView> textviews){
+                                      final int categoryID, final String categoryTitle, final int quoteID){
 
         //sign in into firebase to retrieve records from database
         mFirebaseAuth.signInWithEmailAndPassword(email, password)
@@ -103,7 +102,7 @@ public class DBHelperUtil {
                             }
 
                             if(retrieve.equalsIgnoreCase("quote_item")){
-                                loadQuoteItemFromDb(categoryID, quoteID, textviews, activity);
+                                loadQuoteItemFromDb(categoryID, quoteID, activity);
                             }
 
                         } else {
@@ -168,8 +167,18 @@ public class DBHelperUtil {
         list.setAdapter(adapter);
     }
 
-    private void loadQuoteItemFromDb(int categoryID, int quoteID, final List<TextView> textviews,
-                                            final Activity activity){
+    /**
+     * Retrieves the information of a quote of a particular category and loads
+     * all data retrieved into a model class QuoteItem. Once all information has been
+     * loaded into a QuoteItem instance, display the quote information in the view by
+     * calling the displayQuoteInfoInTextViews of the activity that called the method
+     * which is the QuoteActivity.
+     *
+     * @param categoryID the id of the category in which the quote to retrieve belongs to
+     * @param quoteID the id of the quote to be retrieved
+     * @param activity Activity that called this method which is the QuoteActivity
+     */
+    private void loadQuoteItemFromDb(int categoryID, int quoteID, final Activity activity){
 
         //create the ValueEventListener listener object
         ValueEventListener listener = new ValueEventListener() {

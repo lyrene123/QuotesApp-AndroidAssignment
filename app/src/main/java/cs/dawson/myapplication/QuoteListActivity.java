@@ -27,6 +27,14 @@ public class QuoteListActivity extends Activity {
     //for DAO access methods
     private DBHelperUtil dbHelper;
 
+    /**
+     * Sets the layout of the view. Retrieves the necessary information from the bundle
+     * such as the category name and the category id which will be used to retrieve the
+     * list of short quotes of a category from the database with the help of the DBHelperUtil
+     * class. The data retrieved will be loaded into the ListView and displayed to the user.
+     *
+     * @param savedInstanceState Bundle object
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +61,6 @@ public class QuoteListActivity extends Activity {
         ListView list = (ListView) findViewById(R.id.listViewCat);
 
         //retrieve and load the list of short quotes for the selected category
-        dbHelper.retrieveRecordsFromDb(QuoteListActivity.this, list, "quote_short", categoryID, categoryTitle, -1, null);
+        dbHelper.retrieveRecordsFromDb(QuoteListActivity.this, list, "quote_short", categoryID, categoryTitle, -1);
     }
 }
