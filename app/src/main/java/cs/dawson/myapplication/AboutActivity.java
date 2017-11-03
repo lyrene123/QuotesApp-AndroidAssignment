@@ -11,11 +11,11 @@ import android.os.Bundle;
  * @author Lyrene Labor
  */
 
-public class AboutActivity extends Activity {
+public class AboutActivity extends MenuActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quote);
+        setContentView(R.layout.activity_about);
     }
 }

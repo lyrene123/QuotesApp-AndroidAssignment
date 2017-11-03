@@ -18,7 +18,7 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  *
  * @author Lyrene Labor, Peter Bellefleur
  */
-public class QuoteListActivity extends Activity {
+public class QuoteListActivity extends MenuActivity {
 
     //the category that was selected
     private int categoryID;

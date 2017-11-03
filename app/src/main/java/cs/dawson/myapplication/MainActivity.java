@@ -18,7 +18,7 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  *
  * @author Lyrene Labor, Peter Bellefleur
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MenuActivity {
 
     //for DAO access methods
     private DBHelperUtil dbHelper;

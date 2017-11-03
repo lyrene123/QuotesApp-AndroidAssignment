@@ -2,6 +2,7 @@ package cs.dawson.myapplication;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
@@ -30,11 +31,13 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  *
  * @author Lyrene Labor, Peter Bellefleur
  */
-public class QuoteActivity extends Activity {
+public class QuoteActivity extends MenuActivity {
 
-    private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV;
+    private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV, quoteTitleTV;
     private DBHelperUtil dbHelper;
     private QuoteItem quote;
+    private int quoteID;
+    private int categoryID;
 
     /**
      * Sets the layout of the view. Retrieves the necessary information from the bundle
@@ -50,8 +53,12 @@ public class QuoteActivity extends Activity {
         setContentView(R.layout.activity_quote);
         retrieveHandleToTextViews();
 
+        quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
+        quoteID = 0;
+        categoryID = 0;
+
+
         //retrieve quoteTitle Text view and display in it the category name from the bundle
-        TextView quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
         if ( getIntent().hasExtra("category_title") != false &&
                 getIntent().getExtras().getString("category_title") != null) {
             quoteTitleTV.setText(quoteTitleTV.getText()
@@ -59,14 +66,12 @@ public class QuoteActivity extends Activity {
         }
 
         //retrieve the quote id from the bundle
-        int quoteID = 0;
         if ( getIntent().hasExtra("quote_index") != false &&
                 getIntent().getExtras().getString("quote_index") != null) {
             quoteID = Integer.parseInt(getIntent().getExtras().getString("quote_index")) + 1;
         }
 
         //retrieve the category id from the bundle
-        int categoryID = 0;
         if ( getIntent().hasExtra("category_index") != false &&
                 getIntent().getExtras().getString("category_index") != null) {
             categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
@@ -75,6 +80,25 @@ public class QuoteActivity extends Activity {
         //retrieve the info of the quote with the DBHelper instance
         dbHelper = new DBHelperUtil();
         dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
+    }
+
+    /**
+     *
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        String strTmp;
+
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        strTmp = quoteTitleTV.getText().toString();
+        editor.putString("category_title", strTmp);
+        editor.putInt("quote_index", quoteID);
+        editor.putInt("category_index", categoryID);
+
+        editor.commit();
     }
 
     /**
