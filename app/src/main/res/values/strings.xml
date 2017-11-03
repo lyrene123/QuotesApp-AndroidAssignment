@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">QuotesPeterLyrene</string>
+    <string name="login_error_message">Problem with authentication</string>
+    <string name="login_error_title">Error!</string>
+    <string name="category_title">Categories</string>
+    <string name="category_subtitle">Click on one of the following list items</string>
+    <string name="attributed">Attributed</string>
+    <string name="date_added">Date added</string>
+    <string name="birthdate">Date of Birth</string>
+    <string name="full_quote">Full Quote</string>
+    <string name="ref">Reference</string>
+    <string name="quote_title">Quote about</string>
+    <string name="blurb_title">About the attributed</string>
+    <string name="dismiss">Dismiss</string>
 </resources>
