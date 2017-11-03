@@ -12,4 +12,16 @@
     <string name="quote_title">Quote about</string>
     <string name="blurb_title">About the attributed</string>
     <string name="dismiss">Dismiss</string>
+    <string name="about">About</string>
+    <string name="random">Random quote</string>
+    <string name="last">Last quote viewed</string>
+    <string name="about_header">About this application</string>
+    <string name="about_body">
+        This application contains various quotes about food.
+        \nOn the main screen, you can tap a category to view its related quotes.
+        \nTapping on a short quote will display the full quote, and information about who said it.
+        \nClicking on the "Reference" link will open a web browser, displaying the page this quote
+        was found on.
+    </string>
+    <string name="about_authors">Created by Lyrene Labor and Peter Bellefleur</string>
 </resources>
