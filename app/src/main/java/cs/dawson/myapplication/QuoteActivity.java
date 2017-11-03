@@ -53,9 +53,9 @@ public class QuoteActivity extends Activity {
         //retrieve quoteTitle Text view and display in it the category name from the bundle
         TextView quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
         if ( getIntent().hasExtra("category_title") != false &&
-                getIntent().getExtras().getString("category_name") != null) {
+                getIntent().getExtras().getString("category_title") != null) {
             quoteTitleTV.setText(quoteTitleTV.getText()
-                    + " " + getIntent().getExtras().getString("category_name"));
+                    + " " + getIntent().getExtras().getString("category_title"));
         }
 
         //retrieve the quote id from the bundle
