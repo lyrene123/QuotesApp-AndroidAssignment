@@ -1,34 +1,10 @@
 package cs.dawson.myapplication;
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.AuthResult;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import cs.dawson.myapplication.util.CustomAdapter;
 import cs.dawson.myapplication.util.DBHelperUtil;
 
 /**
@@ -69,6 +45,6 @@ public class MainActivity extends AppCompatActivity {
         ListView list = (ListView) findViewById(R.id.listViewCat);
 
         //retrieve and load the category names from the database into the list view
-        dbHelper.retrieveCategoriesFromDb(MainActivity.this, list, "category", -1, "");
+        dbHelper.retrieveRecordsFromDb(MainActivity.this, list, "category", -1, "", -1, null);
     }
 }

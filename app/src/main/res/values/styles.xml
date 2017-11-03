@@ -36,7 +36,7 @@
 
     <style name="textmain_style.quoteStyle">
         <item name="android:layout_margin">10dp</item>
-        <item name="android:textSize">15dp</item>
+        <item name="android:textSize">20dp</item>
     </style>
 
     <style name="textmain_style.quoteStyle.quoteLbl">

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,8 +20,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs.dawson.myapplication.QuoteActivity;
 import cs.dawson.myapplication.QuoteListActivity;
 import cs.dawson.myapplication.R;
+import cs.dawson.myapplication.model.QuoteItem;
 
 /**
  * Helper utility class that handles database access operations and authentication
@@ -50,6 +53,8 @@ public class DBHelperUtil {
     private final String email = "user@droid.com";
     private final String password = "iloveandroid";
 
+    private  QuoteItem quote;
+
     /**
      * Initializes the DatabaseReference object for retrieval of data
      * and the FirebaseAuth for database authentication
@@ -66,16 +71,21 @@ public class DBHelperUtil {
      * If not, a dialog will display with an error message letting the user know
      * that an error has occurred
      *
-     * @param activity Activity that called this method
+     * @param activity Activity that called this method (QuoteListActivity and QuoteActivity)
      * @param list ListView that will contain the list of categories
+     *             (for MainActivity and QuoteListActivity)
      * @param retrieve String containing the data you want to retrieve from the database
      * @param categoryID the id of the category that was selected and which to display the short quotes
+     *                   (for QuoteListActivity and QuoteActivity)
      * @param categoryTitle the name of the category that was selected and which to display short quotes
+     *                      (for QuoteListActivity and QuoteActivity)
+     * @param textviews List of TextViews to display the quote info (For QuoteActivity)
      */
-    public void retrieveCategoriesFromDb(final Activity activity, final ListView list, final String retrieve,
-                                         final int categoryID, final String categoryTitle){
+    public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String retrieve,
+                                      final int categoryID, final String categoryTitle, final int quoteID,
+                                      final List<TextView> textviews){
 
-        //sign in into firebase to retrieve categories
+        //sign in into firebase to retrieve records from database
         mFirebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -92,6 +102,10 @@ public class DBHelperUtil {
                                         categoryTitle);
                             }
 
+                            if(retrieve.equalsIgnoreCase("quote_item")){
+                                loadQuoteItemFromDb(categoryID, quoteID, textviews, activity);
+                            }
+
                         } else {
                             //display en error dialog box if authentication failed
                             displayErrorAuthentication(task, activity);
@@ -99,6 +113,8 @@ public class DBHelperUtil {
                     }
                 });
     }
+
+
 
     /**
      * Retrieves the short quotes of a particular category and loads them into a ListView with
@@ -150,6 +166,43 @@ public class DBHelperUtil {
 
         adapter = new CustomAdapter(activity, quoteList, "QuoteListActivity", categoryID, categoryTitle);
         list.setAdapter(adapter);
+    }
+
+    private void loadQuoteItemFromDb(int categoryID, int quoteID, final List<TextView> textviews,
+                                            final Activity activity){
+
+        //create the ValueEventListener listener object
+        ValueEventListener listener = new ValueEventListener() {
+            /**
+             * Retrieves any changes made to the database. In our case
+             * this method will be called once at the beginning when
+             * retrieving the initial data.
+             *
+             * @param dataSnapshot DataSnapshot object data from db
+             */
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                setQuoteItem(dataSnapshot.getValue(QuoteItem.class));
+                Log.d("QUOTES-QuoteList", "Retrieved quote item: " + quote.getDate_added());
+
+                if(quote != null){
+                    ((QuoteActivity) activity).displayQuoteInfoInTextViews(quote);
+                }
+            }
+
+            /**
+             * onCancelled called when an error has occurred and the data cannot be retrieved
+             *
+             * @param databaseError DatabaseError containing the error that occured
+             */
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("QUOTES-MainActivity", "Failed to read value.", databaseError.toException());
+            }
+        };
+
+        //set the listener
+        mDatabase.child("quotes").child(categoryID+"").child("q" + quoteID).addValueEventListener(listener);
     }
 
 
@@ -243,7 +296,14 @@ public class DBHelperUtil {
         quoteList.add(shortQuote);
     }
 
-
+    /**
+     * Sets the QuoteItem model instance.
+     *
+     * @param item QuoteItem object to set
+     */
+    private void setQuoteItem(QuoteItem item){
+        this.quote = item;
+    }
 
 }
 

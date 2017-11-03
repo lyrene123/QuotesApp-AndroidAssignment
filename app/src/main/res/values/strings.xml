@@ -10,4 +10,6 @@
     <string name="full_quote">Full Quote</string>
     <string name="ref">Reference</string>
     <string name="quote_title">Quote about</string>
+    <string name="blurb_title">About the attributed</string>
+    <string name="dismiss">Dismiss</string>
 </resources>
