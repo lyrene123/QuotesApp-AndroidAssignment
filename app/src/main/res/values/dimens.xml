@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="categorytxt_size">25dp</dimen>
+    <dimen name="categorytxt_paddingTop">30dp</dimen>
+    <dimen name="categorytitle_size">40dp</dimen>
+    <dimen name="categorytitle_margin">10dp</dimen>
+    <dimen name="categorysub_margintop">8dp</dimen>
+    <dimen name="subtitle_size">22dp</dimen>
+    <dimen name="quote_margin">10dp</dimen>
+    <dimen name="quote_size">20dp</dimen>
+</resources>

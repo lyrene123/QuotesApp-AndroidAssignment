@@ -10,21 +10,21 @@
 
     <style name="textmain_style.categorytxt_style">
         <item name="android:textAllCaps">true</item>
-        <item name="android:paddingTop">30dp</item>
-        <item name="android:textSize">25dp</item>
+        <item name="android:paddingTop">@dimen/categorytxt_paddingTop</item>
+        <item name="android:textSize">@dimen/categorytxt_size</item>
     </style>
 
     <style name="textmain_style.categorytitle_style">
         <item name="android:textAlignment">center</item>
-        <item name="android:textSize">40dp</item>
-        <item name="android:layout_margin">10dp</item>
+        <item name="android:textSize">@dimen/categorytitle_size</item>
+        <item name="android:layout_margin">@dimen/categorytitle_margin</item>
     </style>
 
     <style name="textmain_style.categorysubtitle_style">
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:textSize">22dp</item>
+        <item name="android:layout_marginTop">@dimen/categorysub_margintop</item>
+        <item name="android:layout_marginBottom">@dimen/categorysub_margintop</item>
+        <item name="android:layout_marginLeft">@dimen/categorysub_margintop</item>
+        <item name="android:textSize">@dimen/subtitle_size</item>
     </style>
 
 
@@ -35,8 +35,8 @@
     </style>
 
     <style name="textmain_style.quoteStyle">
-        <item name="android:layout_margin">10dp</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:layout_margin">@dimen/quote_margin</item>
+        <item name="android:textSize">@dimen/quote_size</item>
     </style>
 
     <style name="textmain_style.quoteStyle.quoteLbl">
