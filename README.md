@@ -11,3 +11,5 @@ On any Activity, the options menu can be accessed. The options menu has three po
 * About - Launches the AboutActivity, displaying information to the user about how the app works & who developed it.
 * Random quote - Launches QuoteActivity, displaying a random quote.
 * Last viewed quote - Launches QuoteActivity, displaying the last quote the user has viewed. If the user has not yet viewed a quote, they will see a message saying so.
+
+Created by: Lyrene Labor, Peter Bellefleur
