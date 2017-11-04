@@ -42,10 +42,10 @@ public class QuoteActivity extends MenuActivity {
     private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV;
     private int quoteID;
     private ImageView imageView;
+    private int categoryID;
     private DBHelperUtil dbHelper;
     private QuoteItem quote;
     private String imgName;
-    private int categoryID;
 
     private static String TAG = "QUOTES-QuoteActivity";
 
@@ -87,9 +87,6 @@ public class QuoteActivity extends MenuActivity {
             categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
         }
 
-        //retrieve the info of the quote with the DBHelper instance
-        DBHelperUtil dbHelper = new DBHelperUtil();
-
         //retrieve the category image from the bundle
         if ( getIntent().hasExtra("category_img") != false &&
                 getIntent().getExtras().getString("category_img") != null) {
@@ -98,10 +95,9 @@ public class QuoteActivity extends MenuActivity {
             //if the image is not passed to the bundle, then determine the image based on category number
             determineImageFilename();
         }
-
-        dbHelper = new DBHelperUtil();
-
+        
         //retrieve all quote into, pass the current activity, the data type and set the category id and the quote id
+        dbHelper = new DBHelperUtil();
         dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
     }
 
