@@ -2,11 +2,8 @@ package cs.dawson.myapplication;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-<<<<<<< HEAD
 import android.content.SharedPreferences;
-=======
 import android.net.Uri;
->>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
@@ -17,14 +14,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-<<<<<<< HEAD
-=======
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
->>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,11 +40,7 @@ import cs.dawson.myapplication.util.DBHelperUtil;
 public class QuoteActivity extends MenuActivity {
 
     private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV;
-<<<<<<< HEAD
-    private QuoteItem quote;
     private int quoteID;
-    private int categoryID;
-=======
     private ImageView imageView;
     private DBHelperUtil dbHelper;
     private QuoteItem quote;
@@ -58,7 +48,6 @@ public class QuoteActivity extends MenuActivity {
     private int categoryID;
 
     private static String TAG = "QUOTES-QuoteActivity";
->>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
 
     /**
      * Sets the layout of the view. Retrieves the necessary information from the bundle
@@ -89,23 +78,18 @@ public class QuoteActivity extends MenuActivity {
         //retrieve the quote id from the bundle
         if ( getIntent().hasExtra("quote_index") != false &&
                 getIntent().getExtras().getString("quote_index") != null) {
-            quoteID = Integer.parseInt(getIntent().getExtras().getString("quote_index")) + 1;
+            quoteID = Integer.parseInt(getIntent().getExtras().getString("quote_index"));
         }
 
         //retrieve the category id from the bundle
-<<<<<<< HEAD
-=======
-        categoryID = 0;
->>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
         if ( getIntent().hasExtra("category_index") != false &&
                 getIntent().getExtras().getString("category_index") != null) {
             categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
         }
 
-<<<<<<< HEAD
         //retrieve the info of the quote with the DBHelper instance
         DBHelperUtil dbHelper = new DBHelperUtil();
-=======
+
         //retrieve the category image from the bundle
         if ( getIntent().hasExtra("category_img") != false &&
                 getIntent().getExtras().getString("category_img") != null) {
@@ -118,7 +102,6 @@ public class QuoteActivity extends MenuActivity {
         dbHelper = new DBHelperUtil();
 
         //retrieve all quote into, pass the current activity, the data type and set the category id and the quote id
->>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
         dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
     }
 

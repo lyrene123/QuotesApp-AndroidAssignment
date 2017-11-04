@@ -65,7 +65,7 @@ public class MenuActivity extends AppCompatActivity {
                 Intent randomIntent = new Intent(this, QuoteActivity.class);
                 //generate two random indices to pull from database
                 randomIntent.putExtra("category_index", ((int)(Math.random() * 4) + 1) + "");
-                randomIntent.putExtra("quote_index", ((int)(Math.random() * 3)) + "");
+                randomIntent.putExtra("quote_index", ((int)(Math.random() * 3) + 1) + "");
                 //we do not know what the specific category will be, so specify it was random
                 randomIntent.putExtra("category_title", "a random subject");
                 //start activity
