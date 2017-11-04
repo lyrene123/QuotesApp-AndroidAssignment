@@ -55,13 +55,24 @@ public class QuoteListActivity extends MenuActivity {
             categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index")) + 1;
         }
 
+        //retrieve the image category
+        String img = "";
+        if ( getIntent().hasExtra("category_img") != false &&
+                getIntent().getExtras().getString("category_img") != null) {
+            img = getIntent().getExtras().getString("category_img");
+        }
+
         //instantiate the DBHelper instance
         dbHelper = new DBHelperUtil();
 
         //retrieve the ListView from the view to load the items into it
         ListView list = (ListView) findViewById(R.id.listViewCat);
 
-        //retrieve and load the list of short quotes for the selected category
+        /*retrieve and load the list of short quotes for the selected category
+        * pass the current activity, the ListView in which to load the short quotes, the
+        * data String type, the category id selected, the category title selected.
+        */
         dbHelper.retrieveRecordsFromDb(QuoteListActivity.this, list, "quote_short", categoryID, categoryTitle, -1);
+        dbHelper.setImgName(img);
     }
 }

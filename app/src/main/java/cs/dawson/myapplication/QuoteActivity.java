@@ -2,15 +2,29 @@ package cs.dawson.myapplication;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+<<<<<<< HEAD
 import android.content.SharedPreferences;
+=======
+import android.net.Uri;
+>>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+<<<<<<< HEAD
+=======
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+>>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,9 +46,19 @@ import cs.dawson.myapplication.util.DBHelperUtil;
 public class QuoteActivity extends MenuActivity {
 
     private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV;
+<<<<<<< HEAD
     private QuoteItem quote;
     private int quoteID;
     private int categoryID;
+=======
+    private ImageView imageView;
+    private DBHelperUtil dbHelper;
+    private QuoteItem quote;
+    private String imgName;
+    private int categoryID;
+
+    private static String TAG = "QUOTES-QuoteActivity";
+>>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
 
     /**
      * Sets the layout of the view. Retrieves the necessary information from the bundle
@@ -69,13 +93,32 @@ public class QuoteActivity extends MenuActivity {
         }
 
         //retrieve the category id from the bundle
+<<<<<<< HEAD
+=======
+        categoryID = 0;
+>>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
         if ( getIntent().hasExtra("category_index") != false &&
                 getIntent().getExtras().getString("category_index") != null) {
             categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
         }
 
+<<<<<<< HEAD
         //retrieve the info of the quote with the DBHelper instance
         DBHelperUtil dbHelper = new DBHelperUtil();
+=======
+        //retrieve the category image from the bundle
+        if ( getIntent().hasExtra("category_img") != false &&
+                getIntent().getExtras().getString("category_img") != null) {
+            imgName = getIntent().getExtras().getString("category_img");
+        } else {
+            //if the image is not passed to the bundle, then determine the image based on category number
+            determineImageFilename();
+        }
+
+        dbHelper = new DBHelperUtil();
+
+        //retrieve all quote into, pass the current activity, the data type and set the category id and the quote id
+>>>>>>> 78c8472e5ac20f0f8b1e58314fa0e9ed605ff516
         dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
     }
 
@@ -121,6 +164,7 @@ public class QuoteActivity extends MenuActivity {
         dateTV.setText(quote.getDate_added());
         birthdateTV.setText(quote.getDob());
         fullquoteTV.setText(quote.getQuote_full());
+        loadImageIntoImageView();
 
         //set clickable link
         addLink(refTV, "^Reference", quote.getReference());
@@ -160,6 +204,7 @@ public class QuoteActivity extends MenuActivity {
         dateTV = (TextView) findViewById(R.id.dateTxt);
         birthdateTV = (TextView) findViewById(R.id.birthdateTxt);
         fullquoteTV = (TextView) findViewById(R.id.quoteFullTxt);
+        imageView = (ImageView) findViewById(R.id.categoryImg);
         refTV = (TextView) findViewById(R.id.refTxt);
     }
 
@@ -182,6 +227,58 @@ public class QuoteActivity extends MenuActivity {
         };
         Linkify.addLinks(textView, Pattern.compile(patternToMatch), null, null,
                 filter);
+    }
+
+    /**
+     * Loads an image from the firebase storage. Retrieves a storage reference first
+     * for a particular image name and the help of Glide, load the image retrieved
+     * from storage into an image view.
+     *
+     * Solution based on:
+     * https://github.com/codepath/android_guides/wiki/Displaying-Images-with-the-Glide-Library
+     *
+     */
+    private void loadImageIntoImageView(){
+        //get storage ref for an image
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        StorageReference ref = storageReference.child(imgName);
+        Log.d(TAG, "Loading image: " + imgName);
+
+        //load the image in an ImageView with Glide
+        ref.getDownloadUrl().addOnSuccessListener(QuoteActivity.this, new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d(TAG, "Uri image: " + uri);
+                Glide.with(QuoteActivity.this)
+                        .load(uri)
+                        .into(imageView);
+            }
+        });
+    }
+
+    /**
+     * Creates the String image filename depending on the category index or id.
+     */
+    private void determineImageFilename(){
+        switch (categoryID){
+            case 1 :
+                imgName = "fuitsvegies.png";
+                break;
+            case 2 :
+                imgName = "junkfood.png";
+                break;
+            case 3 :
+                imgName = "pasta.png";
+                break;
+            case 4 :
+                imgName = "seafood.png";
+                break;
+            case 5 :
+                imgName = "soup.png";
+                break;
+            default :
+                imgName = "";
+        }
     }
 
 }
