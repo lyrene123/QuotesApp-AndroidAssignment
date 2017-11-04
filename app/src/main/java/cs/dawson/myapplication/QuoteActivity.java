@@ -39,12 +39,12 @@ import cs.dawson.myapplication.util.DBHelperUtil;
 public class QuoteActivity extends MenuActivity {
 
     private TextView attributedTV, dateTV, birthdateTV, shortQuoteTV, fullquoteTV, refTV, quoteTitleTV;
-    private int quoteID;
+    private int quoteID, categoryID, currentOrientation;
     private ImageView imageView;
-    private int categoryID;
     private DBHelperUtil dbHelper;
     private QuoteItem quote;
     private String imgName;
+    private boolean isRotate;
 
     private static String TAG = "QuoteActivity";
 
@@ -65,6 +65,11 @@ public class QuoteActivity extends MenuActivity {
         retrieveHandleToTextViews();
         quoteID = 0;
         categoryID = 0;
+        currentOrientation = 0;
+        isRotate = false;
+
+        //get current device orientation to be used to determine if user has rotated device
+        this.currentOrientation = getResources().getConfiguration().orientation;
 
         retrieveDataFromIntent();
         
@@ -79,26 +84,50 @@ public class QuoteActivity extends MenuActivity {
      *  Saves the category title, and the indices necessary to retrieve the quote from the
      *  database, in a SharedPreferences file. This allows the specific quote being viewed to be
      *  retrieved again (via an option in the options menu) after the Activity's lifecycle ends.
+     *  Only save when device is not rotating which also causes the onPause to be called.
      */
     @Override
     protected void onPause() {
         super.onPause();
 
         Log.i(TAG, "onPause");
+        checkOrientationChanged();
 
-        //create shared prefs, give it a name so we can refer to it in other Activities
-        SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+        //Only save when device is not rotating which also causes the onPause to be called.
+        if(!isRotate) {
+            //create shared prefs, give it a name so we can refer to it in other Activities
+            SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
 
-        //retrieve category title from intent extras
-        editor.putString("category_title", getIntent().getExtras().getString("category_title"));
-        //we need the indices to pull the specific quote from the database later
-        editor.putInt("quote_index", quoteID);
-        Log.d(TAG, "saving quote index: " + quoteID);
-        editor.putInt("category_index", categoryID);
-        Log.d(TAG, "saving category index: " + categoryID);
-        //save data
-        editor.commit();
+            //retrieve category title from intent extras
+            editor.putString("category_title", getIntent().getExtras().getString("category_title"));
+            //we need the indices to pull the specific quote from the database later
+            editor.putInt("quote_index", quoteID);
+            Log.d(TAG, "saving quote index: " + quoteID);
+            editor.putInt("category_index", categoryID);
+            Log.d(TAG, "saving category index: " + categoryID);
+            //save data
+            editor.commit();
+        }
+    }
+
+    /**
+     * Retrieves the orientation of the device and compares it with the property orientation
+     * that was set in onCreate method. Both are compared and if orientation has changed, set
+     * the isRotate boolean to true and replace the property orientation with the new orientation
+     * retrieved
+     * <p>
+     * This method of checking orientation is inspired by
+     * https://www.android-examples.com/find-get-current-screen-orientation-in-android-programmatically/
+     */
+    private void checkOrientationChanged() {
+        Log.d(TAG, "checkOrientationChanged method called");
+        int newOrientation = getResources().getConfiguration().orientation;
+        if (this.currentOrientation != newOrientation) {
+            Log.d("DQ", "Orientation changed");
+            this.isRotate = true;
+            this.currentOrientation = newOrientation;
+        }
     }
 
     /**

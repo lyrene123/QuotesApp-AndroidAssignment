@@ -108,7 +108,7 @@ public class MenuActivity extends AppCompatActivity {
                     Log.d(TAG, "user has not previously viewed a quote, popping Toast");
                     //if not found, no previous data saved - user has not viewed a quote.
                     //display message to user
-                    Toast.makeText(this, "You have not viewed a quote yet!", Toast.LENGTH_LONG)
+                    Toast.makeText(this, "You have not viewed a previous quotes yet!", Toast.LENGTH_LONG)
                             .show();
                 }
                 return true;
