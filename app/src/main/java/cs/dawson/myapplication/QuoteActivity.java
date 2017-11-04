@@ -37,7 +37,7 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  */
 public class QuoteActivity extends Activity {
 
-    private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV;
+    private TextView attributedTV, dateTV, birthdateTV, shortQuoteTV, fullquoteTV, refTV;
     private ImageView imageView;
     private DBHelperUtil dbHelper;
     private QuoteItem quote;
@@ -116,10 +116,11 @@ public class QuoteActivity extends Activity {
         attributedTV.setText(content);
         dateTV.setText(quote.getDate_added());
         birthdateTV.setText(quote.getDob());
+        shortQuoteTV.setText(quote.getQuote_short());
         fullquoteTV.setText(quote.getQuote_full());
         loadImageIntoImageView();
 
-        //set clickable link
+        //set clickable link for the reference
         addLink(refTV, "^Reference", quote.getReference());
 
         //set the popup dialog
@@ -156,6 +157,7 @@ public class QuoteActivity extends Activity {
         attributedTV = (TextView) findViewById(R.id.attributedTxt);
         dateTV = (TextView) findViewById(R.id.dateTxt);
         birthdateTV = (TextView) findViewById(R.id.birthdateTxt);
+        shortQuoteTV = (TextView) findViewById(R.id.quoteShortTxt);
         fullquoteTV = (TextView) findViewById(R.id.quoteFullTxt);
         imageView = (ImageView) findViewById(R.id.categoryImg);
         refTV = (TextView) findViewById(R.id.refTxt);

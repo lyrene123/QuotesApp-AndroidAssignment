@@ -7,6 +7,7 @@
     <string name="attributed">Attributed</string>
     <string name="date_added">Date added</string>
     <string name="birthdate">Date of Birth</string>
+    <string name="short_quote">Short Quote</string>
     <string name="full_quote">Full Quote</string>
     <string name="ref">Reference</string>
     <string name="quote_title">Quote about</string>
