@@ -31,6 +31,7 @@
     <style name="textmain_style">
         <item name="android:fontFamily">serif-monospace</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/font_color</item>
     </style>
 
     <style name="textmain_style.quoteStyle">
@@ -43,4 +44,7 @@
         <item name="android:textAlignment">viewEnd</item>
     </style>
 
+    <style name="background_style">
+        <item name="android:background">@color/background_color</item>
+    </style>
 </resources>
