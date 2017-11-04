@@ -80,8 +80,12 @@ public class DBHelperUtil {
      *
      * @param activity Activity that needs access to the database
      * @param list ListView that will contain the list of categories or short quotes
-     *             (applied for the MainActivity and QuoteListActivity)
+     *             (applied for the MainActivity and QuoteListActivity only)
      * @param data String containing the type of data you want to data from the database
+     * @param categoryID the index or id of the category selected needed to retrieve specific data
+     *                   (applied for QuoteActivity and MainActivity)
+     * @param
+     *
      */
     public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String data,
                                       final int categoryID, final String categoryTitle, final int quoteID){

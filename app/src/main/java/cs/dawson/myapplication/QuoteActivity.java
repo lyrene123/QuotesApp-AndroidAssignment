@@ -48,6 +48,7 @@ public class QuoteActivity extends MenuActivity {
     private DBHelperUtil dbHelper;
     private QuoteItem quote;
     private String imgName;
+    private int categoryID;
 
     private static String TAG = "QUOTES-QuoteActivity";
 
@@ -93,6 +94,9 @@ public class QuoteActivity extends MenuActivity {
         if ( getIntent().hasExtra("category_img") != false &&
                 getIntent().getExtras().getString("category_img") != null) {
             imgName = getIntent().getExtras().getString("category_img");
+        } else {
+            //if the image is not passed to the bundle, then determine the image based on category number
+            determineImageFilename();
         }
         
         //retrieve all quote into, pass the current activity, the data type and set the category id and the quote id
@@ -232,6 +236,31 @@ public class QuoteActivity extends MenuActivity {
                         .into(imageView);
             }
         });
+    }
+
+    /**
+     * Creates the String image filename depending on the category index or id.
+     */
+    private void determineImageFilename(){
+        switch (categoryID){
+            case 1 :
+                imgName = "fuitsvegies.png";
+                break;
+            case 2 :
+                imgName = "junkfood.png";
+                break;
+            case 3 :
+                imgName = "pasta.png";
+                break;
+            case 4 :
+                imgName = "seafood.png";
+                break;
+            case 5 :
+                imgName = "soup.png";
+                break;
+            default :
+                imgName = "";
+        }
     }
 
 }
