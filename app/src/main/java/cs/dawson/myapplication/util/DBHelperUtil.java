@@ -113,6 +113,11 @@ public class DBHelperUtil {
                                 //if a quote and its related info are the data to data
                                 case "quote_item" :
                                     loadQuoteItemFromDb(activity, categoryID, quoteID);
+                                    break;
+                                //if request to authenticate to the database before retrieving image from storage
+                                case "cat_img" :
+                                    ((QuoteActivity) activity).loadImageIntoImageView();
+                                    break;
                             }
                         } else {
                             //display en error dialog box if authentication failed

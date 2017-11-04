@@ -143,7 +143,12 @@ public class QuoteActivity extends MenuActivity {
         birthdateTV.setText(quote.getDob());
         shortQuoteTV.setText(quote.getQuote_short());
         fullquoteTV.setText(quote.getQuote_full());
-        loadImageIntoImageView();
+
+        /*
+        * Sends a request to the database to authenticate to the database before
+        * being able to retrieve an image from firebase storage
+        * */
+        dbHelper.retrieveRecordsFromDb(this, null, "cat_img", -1, "", -1);
 
         //set clickable link for the reference
         addLink(refTV, "^Reference", quote.getReference());
@@ -218,7 +223,7 @@ public class QuoteActivity extends MenuActivity {
      * https://github.com/codepath/android_guides/wiki/Displaying-Images-with-the-Glide-Library
      *
      */
-    private void loadImageIntoImageView(){
+    public void loadImageIntoImageView(){
         //get storage ref for an image
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child(imgName);
