@@ -101,21 +101,19 @@ public class DBHelperUtil {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //if category names are the data you want to data
-                            if(data.equalsIgnoreCase("category")) {
-                                loadCategoriesFromDb(list, activity);
+                            switch (data){
+                                //if category names are the data you want to data
+                                case "category" :
+                                    loadCategoriesFromDb(list, activity);
+                                    break;
+                                //if the list of category short quotes are the data to data
+                                case "quote_short" :
+                                    loadCategoryShortQuoteFromDb(list, activity, categoryID, categoryTitle);
+                                    break;
+                                //if a quote and its related info are the data to data
+                                case "quote_item" :
+                                    loadQuoteItemFromDb(activity, categoryID, quoteID);
                             }
-
-                            //if the list of category short quotes are the data to data
-                            if(data.equalsIgnoreCase("quote_short")){
-                                loadCategoryShortQuoteFromDb(list, activity, categoryID, categoryTitle);
-                            }
-
-                            //if a quote and its related info are the data to data
-                            if(data.equalsIgnoreCase("quote_item")){
-                                loadQuoteItemFromDb(activity, categoryID, quoteID);
-                            }
-
                         } else {
                             //display en error dialog box if authentication failed
                             displayErrorAuthentication(task, activity);

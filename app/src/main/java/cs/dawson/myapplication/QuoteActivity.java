@@ -1,6 +1,5 @@
 package cs.dawson.myapplication;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
