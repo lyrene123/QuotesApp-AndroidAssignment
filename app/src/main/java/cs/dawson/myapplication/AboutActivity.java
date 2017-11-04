@@ -1,6 +1,7 @@
 package cs.dawson.myapplication;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 
 /**
  * The AboutActivity class defines an Activity that will display information about the

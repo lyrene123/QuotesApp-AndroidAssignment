@@ -2,6 +2,7 @@ package cs.dawson.myapplication;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,12 @@ public class MenuActivity extends AppCompatActivity {
         //inflate it to display to user
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options, menu);
+
+        //setup the icon beside the app title
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setIcon(R.mipmap.ic_launcher);
+
         return true;
     }
 
