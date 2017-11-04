@@ -32,7 +32,8 @@ import cs.dawson.myapplication.R;
  * mostly used by the MainActivity and the QuoteListActivity to display
  * the list of category names or the short quotes of a category.
  *
- * @author Lyrene Labor, Peter Bellefleur
+ * @author Lyrene Labor
+ * @author Peter Bellefleur
  */
 public class CustomAdapter extends BaseAdapter {
 
@@ -214,7 +215,7 @@ public class CustomAdapter extends BaseAdapter {
                 if(activity instanceof QuoteListActivity){
                     Intent i = new Intent(context, QuoteActivity.class);
                     i.putExtra("category_index", categoryID+"");
-                    i.putExtra("quote_index", position+"");
+                    i.putExtra("quote_index", (position + 1) +"");
                     i.putExtra("category_title", categoryTitle);
 
                     //only pass the 1st image from the list since it's the only one in the list

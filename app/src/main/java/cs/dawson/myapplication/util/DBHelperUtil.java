@@ -34,7 +34,8 @@ import cs.dawson.myapplication.model.QuoteItem;
  * For the QuoteActivity, handles the retrieval of all information of a particular quote
  * of category and data loaded into a model class.
  *
- * @author Lyrene Labor, Peter Bellefleur
+ * @author Lyrene Labor
+ * @author Peter Bellefleur
  */
 public class DBHelperUtil {
 
