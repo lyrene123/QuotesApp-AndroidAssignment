@@ -1,6 +1,5 @@
 package cs.dawson.myapplication;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +15,8 @@ import java.lang.Math;
  * MenuActivity provides several features that an application user can access anywhere, regardless
  * of current Activity.
  *
- * @author Peter Bellefleur
  * @author Lyrene Labor
+ * @author Peter Bellefleur
  */
 
 public class MenuActivity extends AppCompatActivity {
@@ -33,6 +32,7 @@ public class MenuActivity extends AppCompatActivity {
         //run superclass's onCreateOptionsMenu method
         super.onCreateOptionsMenu(menu);
         //menu is defined in res/menu/options.xml
+        //inflate it to display to user
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options, menu);
         return true;
@@ -61,23 +61,32 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
             //random option: display a random quote in QuoteActivity
             case R.id.random:
+                //create intent
                 Intent randomIntent = new Intent(this, QuoteActivity.class);
+                //generate two random indices to pull from database
                 randomIntent.putExtra("category_index", ((int)(Math.random() * 4) + 1) + "");
                 randomIntent.putExtra("quote_index", ((int)(Math.random() * 3)) + "");
+                //we do not know what the specific category will be, so specify it was random
                 randomIntent.putExtra("category_title", "a random subject");
+                //start activity
                 startActivity(randomIntent);
                 return true;
             //last option: display last viewed quote in QuoteActivity
             case R.id.last:
+                //retrieve QUOTE_INDICES shared prefs
                 SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
+                //check that shared prefs contain key-value pairs we need to load quote
                 if (prefs.contains("category_title") && prefs.contains("quote_index")
                         && prefs.contains("category_index")) {
+                    //if so, create new intent, plays values in as extras, launch activity
                     Intent lastIntent = new Intent(this, QuoteActivity.class);
                     lastIntent.putExtra("category_index", prefs.getInt("category_index", -1) + "");
                     lastIntent.putExtra("quote_index", prefs.getInt("quote_index", -1) + "");
                     lastIntent.putExtra("category_title", prefs.getString("category_title", null));
                     startActivity(lastIntent);
                 } else {
+                    //if not found, no previous data saved - user has not viewed a quote.
+                    //display message to user
                     Toast.makeText(this, "You have not viewed a quote yet!", Toast.LENGTH_LONG)
                             .show();
                 }

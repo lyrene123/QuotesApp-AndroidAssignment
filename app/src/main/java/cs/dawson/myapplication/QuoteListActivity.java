@@ -16,7 +16,8 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  * A click event listeners is set up by the DBHelper for each list item that will launch
  * an intent to display the QuoteListActivity and display the list of quote.
  *
- * @author Lyrene Labor, Peter Bellefleur
+ * @author Lyrene Labor
+ * @author Peter Bellefleur
  */
 public class QuoteListActivity extends MenuActivity {
 

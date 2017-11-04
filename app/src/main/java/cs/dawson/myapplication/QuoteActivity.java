@@ -26,11 +26,12 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  * on the attributed text to popup the dialog containing a blurb and sets the reference text
  * as a clickable link.
  *
- * @author Lyrene Labor, Peter Bellefleur
+ * @author Lyrene Labor
+ * @author Peter Bellefleur
  */
 public class QuoteActivity extends MenuActivity {
 
-    private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV, quoteTitleTV;
+    private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV;
     private QuoteItem quote;
     private int quoteID;
     private int categoryID;
@@ -49,7 +50,7 @@ public class QuoteActivity extends MenuActivity {
         setContentView(R.layout.activity_quote);
         retrieveHandleToTextViews();
 
-        quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
+        TextView quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
         quoteID = 0;
         categoryID = 0;
 
@@ -79,19 +80,24 @@ public class QuoteActivity extends MenuActivity {
     }
 
     /**
-     *
+     *  Saves the category title, and the indices necessary to retrieve the quote from the
+     *  database, in a SharedPreferences file. This allows the specific quote being viewed to be
+     *  retrieved again (via an option in the options menu) after the Activity's lifecycle ends.
      */
     @Override
     protected void onPause() {
         super.onPause();
 
+        //create shared prefs, give it a name so we can refer to it in other Activities
         SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
+        //retrieve category title from intent extras
         editor.putString("category_title", getIntent().getExtras().getString("category_title"));
+        //we need the indices to pull the specific quote from the database later
         editor.putInt("quote_index", quoteID);
         editor.putInt("category_index", categoryID);
-
+        //save data
         editor.commit();
     }
 

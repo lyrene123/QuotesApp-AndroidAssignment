@@ -21,7 +21,8 @@ import cs.dawson.myapplication.R;
  * the total count of items in the list, the item itself and methods
  * that will inflate the items into a list.
  *
- * @author Lyrene Labor, Peter Bellefleur
+ * @author Lyrene Labor
+ * @author Peter Bellefleur
  */
 public class CustomAdapter extends BaseAdapter {
 

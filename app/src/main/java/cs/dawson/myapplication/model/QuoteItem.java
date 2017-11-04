@@ -6,6 +6,9 @@ package cs.dawson.myapplication.model;
  * name of the attributed, the blurb of the attributed, the date the quote was added,
  * the date of birth of the attributed, the short and full quotes, and the reference
  * of the website the quote was taken from.
+ *
+ * @author Lyrene Labor
+ * @author Peter Bellefleur
  */
 public class QuoteItem {
     private String attributed;

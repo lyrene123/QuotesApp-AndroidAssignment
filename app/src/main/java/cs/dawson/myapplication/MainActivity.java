@@ -1,6 +1,5 @@
 package cs.dawson.myapplication;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
@@ -16,13 +15,10 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  * A click event listeners is set up by the DBHelper for each list item that will launch
  * an intent to display the QuoteListActivity and display the list of quote.
  *
- * @author Lyrene Labor, Peter Bellefleur
+ * @author Lyrene Labor
+ * @author Peter Bellefleur
  */
 public class MainActivity extends MenuActivity {
-
-    //for DAO access methods
-    private DBHelperUtil dbHelper;
-
 
     /**
      * Sets the layout of the activity. Initializes the DBHelper instance
@@ -39,7 +35,7 @@ public class MainActivity extends MenuActivity {
         setContentView(R.layout.activity_main);
 
         //Initialize DBHelper object
-        dbHelper = new DBHelperUtil();
+        DBHelperUtil dbHelper = new DBHelperUtil();
 
         //retrieve the ListView that will hold the list of categories
         ListView list = (ListView) findViewById(R.id.listViewCat);

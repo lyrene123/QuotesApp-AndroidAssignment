@@ -37,7 +37,8 @@ import cs.dawson.myapplication.model.QuoteItem;
  * loaded into a model class.
  *
  *
- * @author Lyrene Labor, Peter Bellefleur
+ * @author Lyrene Labor
+ * @author Peter Bellefleur
  */
 public class DBHelperUtil {
 
