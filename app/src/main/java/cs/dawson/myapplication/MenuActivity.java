@@ -3,6 +3,7 @@ package cs.dawson.myapplication;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import java.lang.Math;
  */
 
 public class MenuActivity extends AppCompatActivity {
+    private final String TAG = "MenuActivity";
 
     /**
      * Inflates the XML for the menu, to display it to the user.
@@ -35,6 +37,7 @@ public class MenuActivity extends AppCompatActivity {
         //inflate it to display to user
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options, menu);
+        Log.i(TAG, "onCreateOptionsMenu");
         return true;
     }
 
@@ -51,33 +54,43 @@ public class MenuActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, "onOptionsItemSelected");
         //handle item selection
         switch (item.getItemId()) {
             //about option: display AboutActivity
             case R.id.about:
+                Log.d(TAG, "option selected: About");
                 //create intent, start activity
                 Intent aboutIntent = new Intent(this, AboutActivity.class);
                 startActivity(aboutIntent);
                 return true;
             //random option: display a random quote in QuoteActivity
             case R.id.random:
+                Log.d(TAG, "option selected: Random");
                 //create intent
                 Intent randomIntent = new Intent(this, QuoteActivity.class);
                 //generate two random indices to pull from database
-                randomIntent.putExtra("category_index", ((int)(Math.random() * 4) + 1) + "");
-                randomIntent.putExtra("quote_index", ((int)(Math.random() * 3) + 1) + "");
+                int categoryIndex = (int)(Math.random() * 4) + 1;
+                int quoteIndex = (int)(Math.random() * 3) + 1;
+                Log.d(TAG, "category index generated: " + categoryIndex);
+                Log.d(TAG, "quote index generated: " + quoteIndex);
+                randomIntent.putExtra("category_index", categoryIndex + "");
+                randomIntent.putExtra("quote_index", quoteIndex + "");
                 //we do not know what the specific category will be, so specify it was random
-                randomIntent.putExtra("category_title", "a random subject");
+                randomIntent.putExtra("category_title", getResources()
+                        .getString(R.string.random_cat));
                 //start activity
                 startActivity(randomIntent);
                 return true;
             //last option: display last viewed quote in QuoteActivity
             case R.id.last:
+                Log.d(TAG, "option selected: Last");
                 //retrieve QUOTE_INDICES shared prefs
                 SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
                 //check that shared prefs contain key-value pairs we need to load quote
                 if (prefs.contains("category_title") && prefs.contains("quote_index")
                         && prefs.contains("category_index")) {
+                    Log.d(TAG, "user has previously viewed a quote, launching QuoteActivity");
                     //if so, create new intent, plays values in as extras, launch activity
                     Intent lastIntent = new Intent(this, QuoteActivity.class);
                     lastIntent.putExtra("category_index", prefs.getInt("category_index", -1) + "");
@@ -85,6 +98,7 @@ public class MenuActivity extends AppCompatActivity {
                     lastIntent.putExtra("category_title", prefs.getString("category_title", null));
                     startActivity(lastIntent);
                 } else {
+                    Log.d(TAG, "user has not previously viewed a quote, popping Toast");
                     //if not found, no previous data saved - user has not viewed a quote.
                     //display message to user
                     Toast.makeText(this, "You have not viewed a quote yet!", Toast.LENGTH_LONG)
@@ -94,6 +108,7 @@ public class MenuActivity extends AppCompatActivity {
 
             //default: call superclass implementation
             default:
+                Log.e(TAG, "an option was selected but not recognized as About, Random or Last!!");
                 return super.onOptionsItemSelected(item);
         }
     }
