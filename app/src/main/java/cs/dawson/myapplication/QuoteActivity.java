@@ -42,6 +42,7 @@ public class QuoteActivity extends Activity {
     private DBHelperUtil dbHelper;
     private QuoteItem quote;
     private String imgName;
+    private int categoryID;
 
     private static String TAG = "QUOTES-QuoteActivity";
 
@@ -75,7 +76,7 @@ public class QuoteActivity extends Activity {
         }
 
         //retrieve the category id from the bundle
-        int categoryID = 0;
+        categoryID = 0;
         if ( getIntent().hasExtra("category_index") != false &&
                 getIntent().getExtras().getString("category_index") != null) {
             categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
@@ -85,6 +86,9 @@ public class QuoteActivity extends Activity {
         if ( getIntent().hasExtra("category_img") != false &&
                 getIntent().getExtras().getString("category_img") != null) {
             imgName = getIntent().getExtras().getString("category_img");
+        } else {
+            //if the image is not passed to the bundle, then determine the image based on category number
+            determineImageFilename();
         }
 
         dbHelper = new DBHelperUtil();
@@ -203,6 +207,31 @@ public class QuoteActivity extends Activity {
                         .into(imageView);
             }
         });
+    }
+
+    /**
+     * Creates the String image filename depending on the category index or id.
+     */
+    private void determineImageFilename(){
+        switch (categoryID){
+            case 1 :
+                imgName = "fuitsvegies.png";
+                break;
+            case 2 :
+                imgName = "junkfood.png";
+                break;
+            case 3 :
+                imgName = "pasta.png";
+                break;
+            case 4 :
+                imgName = "seafood.png";
+                break;
+            case 5 :
+                imgName = "soup.png";
+                break;
+            default :
+                imgName = "";
+        }
     }
 
 }
