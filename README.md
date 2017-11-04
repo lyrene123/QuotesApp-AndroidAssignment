@@ -1,6 +1,6 @@
 # Assignment 2 - Quote List Application with Firebase integration
 
-This Android application displays various quotes related to food. 
+This Android application (QuotesPeterLyrene) displays various quotes related to food. 
 
 Data is stored in an cloud-hosted NoSQL database (Firebase). The database stores quote information among five categories, with four quotes per category.
 
