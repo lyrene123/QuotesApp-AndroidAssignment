@@ -211,7 +211,7 @@ public class QuoteActivity extends MenuActivity {
      */
     public void loadImageIntoImageView(){
         Log.i(TAG, "loadImageIntoImageView()");
-        
+
         //get storage ref for an image
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child(imgName);
