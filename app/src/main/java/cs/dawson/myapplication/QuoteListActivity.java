@@ -61,6 +61,9 @@ public class QuoteListActivity extends Activity {
         ListView list = (ListView) findViewById(R.id.listViewCat);
 
         //retrieve and load the list of short quotes for the selected category
+        /*pass the current activity, the ListView in which to load the short quotes, the
+        * data String type, the category id selected, the category title selected.
+        * */
         dbHelper.retrieveRecordsFromDb(QuoteListActivity.this, list, "quote_short", categoryID, categoryTitle, -1);
     }
 }

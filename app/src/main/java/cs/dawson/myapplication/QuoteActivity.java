@@ -10,9 +10,6 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,6 +71,8 @@ public class QuoteActivity extends Activity {
 
         //retrieve the info of the quote with the DBHelper instance
         dbHelper = new DBHelperUtil();
+
+        //pass the current activity, the data type
         dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
     }
 

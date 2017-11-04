@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs.dawson.myapplication.QuoteActivity;
-import cs.dawson.myapplication.QuoteListActivity;
 import cs.dawson.myapplication.R;
 import cs.dawson.myapplication.model.QuoteItem;
 
@@ -42,6 +40,7 @@ public class DBHelperUtil {
     //the different lists to fill with data from database
     private List<String> categoriesList;
     private List<String> quoteList;
+    private List<String> imageList;
     private CustomAdapter adapter;
 
     //for database access and authentication
@@ -66,7 +65,7 @@ public class DBHelperUtil {
 
     /**
      * Retrieves the names of the categories, the short quotes of a category, or all the info of a quote
-     * depending on the retrieve input String which indicates the type data we want to retrieve.
+     * depending on the data input String which indicates the type data we want to data.
      * But handles database authentication first before retrieving any database records.
      * If not, a dialog will display with an error message letting the user know
      * that an error has occurred
@@ -74,35 +73,35 @@ public class DBHelperUtil {
      * @param activity Activity that needs access to the database
      * @param list ListView that will contain the list of categories or short quotes
      *             (applied for the MainActivity and QuoteListActivity)
-     * @param retrieve String containing the type of data you want to retrieve from the database
-     * @param categoryID the id of the category that was selected and used to retrieve the right
+     * @param data String containing the type of data you want to data from the database
+     * @param categoryID the id of the category that was selected and used to data the right
      *                   the short quotes
      *                   (for QuoteListActivity and QuoteActivity)
      * @param categoryTitle the name of the category that was selected
      *                      (for QuoteListActivity and QuoteActivity)
      */
-    public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String retrieve,
+    public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String data,
                                       final int categoryID, final String categoryTitle, final int quoteID){
 
-        //sign in into firebase to retrieve records from database
+        //sign in into firebase to data records from database
         mFirebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //if category names are the data you want to retrieve
-                            if(retrieve.equalsIgnoreCase("category")) {
+                            //if category names are the data you want to data
+                            if(data.equalsIgnoreCase("category")) {
                                 loadCategoriesFromDb(list, activity);
                             }
 
-                            //if the list of category short quotes are the data to retrieve
-                            if(retrieve.equalsIgnoreCase("quote_short")){
+                            //if the list of category short quotes are the data to data
+                            if(data.equalsIgnoreCase("quote_short")){
                                 loadCategoryShortQuoteFromDb(list, activity, categoryID,
                                         categoryTitle);
                             }
 
-                            //if a quote and its related info are the data to retrieve
-                            if(retrieve.equalsIgnoreCase("quote_item")){
+                            //if a quote and its related info are the data to data
+                            if(data.equalsIgnoreCase("quote_item")){
                                 loadQuoteItemFromDb(categoryID, quoteID, activity);
                             }
 
@@ -113,8 +112,6 @@ public class DBHelperUtil {
                     }
                 });
     }
-
-
 
     /**
      * Retrieves the short quotes of a particular category and loads them into a ListView with
@@ -168,7 +165,7 @@ public class DBHelperUtil {
         mDatabase.child("quotes").child(categoryID+"").addValueEventListener(listener);
 
         //create the adapter and set it to the ListView to inflate the items
-        adapter = new CustomAdapter(activity, quoteList, "QuoteListActivity", categoryID, categoryTitle);
+        adapter = new CustomAdapter(activity, quoteList, null, categoryID, categoryTitle);
         list.setAdapter(adapter);
     }
 
@@ -233,9 +230,11 @@ public class DBHelperUtil {
      * @param list ListView object which we want to load the data into
      * @param activity Activity that called the method
      */
-    private void loadCategoriesFromDb(ListView list, Activity activity){
+    private void loadCategoriesFromDb(ListView list, final Activity activity){
         //initialize the list of categories
         categoriesList = new ArrayList<>();
+        //initialize the list of categories images
+        imageList = new ArrayList<>();
 
         //create the ValueEventListener listener object
         ValueEventListener listener = new ValueEventListener() {
@@ -253,6 +252,9 @@ public class DBHelperUtil {
 
                     //add the retrieved data into the list of categories
                     addCategoryToList((String)item.child("name").getValue());
+
+                    //add the retrieved image into the list of images
+                    addImageToList((String)item.child("image").getValue());
                     Log.d("QUOTES-MainActivity", "Category item is: " +
                             (String)item.child("name").getValue());
 
@@ -275,10 +277,14 @@ public class DBHelperUtil {
         mDatabase.child("categories").addValueEventListener(listener);
 
         //instantiate the custom adapter
-        adapter =  new CustomAdapter(activity, categoriesList, "MainActivity", -1, "");
+        adapter =  new CustomAdapter(activity, categoriesList, imageList, -1, "");
 
         //set the adapter into the ListView
         list.setAdapter(adapter);
+    }
+
+    private void addImageToList(String imgName){
+        imageList.add(imgName);
     }
 
     /**
