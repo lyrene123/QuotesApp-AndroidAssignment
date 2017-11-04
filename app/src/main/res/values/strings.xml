@@ -20,7 +20,7 @@
         This application contains various quotes about food.
         \n\nOn the main screen, you can tap a category to view its related quotes.
         Tapping on a short quote will display the full quote, and information about who said it.
-        Tapping on the quote attribution will display a small blurb about who originally said it.  
+        Tapping on the quote attribution will display a small blurb about who originally said it.
         Tapping on the \"Reference\" link will open a web browser, displaying the page this quote
         was found on.
         \n\nThe options menu, visible by tapping the three dots at the top
