@@ -90,9 +90,7 @@ public class QuoteActivity extends Activity {
         dbHelper = new DBHelperUtil();
 
         //retrieve all quote into, pass the current activity, the data type and set the category id and the quote id
-        dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item");
-        dbHelper.setCategoryID(categoryID);
-        dbHelper.setQuoteID(quoteID);
+        dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
     }
 
     /**

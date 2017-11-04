@@ -56,9 +56,6 @@ public class DBHelperUtil {
     private  QuoteItem quote;
 
     //extra information needed for retrieval of specific records from the database
-    private int categoryID;
-    private String categoryTitle;
-    private int quoteID;
     private String imgName;
 
     private static String TAG = "QUOTES-QLActivity";
@@ -72,41 +69,6 @@ public class DBHelperUtil {
         mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
-    /**
-     * Sets the String image file name instance
-     *
-     * @param imgName String image file name
-     */
-    public void setImgName(String imgName) {
-        this.imgName = imgName;
-    }
-
-    /**
-     * Sets the category id or index
-     *
-     * @param categoryID int category index
-     */
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
-    }
-
-    /**
-     * Sets the category title
-     *
-     * @param categoryTitle String category title
-     */
-    public void setCategoryTitle(String categoryTitle) {
-        this.categoryTitle = categoryTitle;
-    }
-
-    /**
-     * Sets the quote id or index
-     *
-     * @param quoteID int quote index
-     */
-    public void setQuoteID(int quoteID) {
-        this.quoteID = quoteID;
-    }
 
     /**
      * Retrieves the names of the categories, the short quotes of a category, or all the info of a quote
@@ -120,7 +82,8 @@ public class DBHelperUtil {
      *             (applied for the MainActivity and QuoteListActivity)
      * @param data String containing the type of data you want to data from the database
      */
-    public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String data){
+    public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String data,
+                                      final int categoryID, final String categoryTitle, final int quoteID){
 
         //sign in into firebase to data records from database
         mFirebaseAuth.signInWithEmailAndPassword(email, password)
@@ -135,12 +98,12 @@ public class DBHelperUtil {
 
                             //if the list of category short quotes are the data to data
                             if(data.equalsIgnoreCase("quote_short")){
-                                loadCategoryShortQuoteFromDb(list, activity);
+                                loadCategoryShortQuoteFromDb(list, activity, categoryID, categoryTitle);
                             }
 
                             //if a quote and its related info are the data to data
                             if(data.equalsIgnoreCase("quote_item")){
-                                loadQuoteItemFromDb(activity);
+                                loadQuoteItemFromDb(activity, categoryID, quoteID);
                             }
 
                         } else {
@@ -152,12 +115,22 @@ public class DBHelperUtil {
     }
 
     /**
+     * Sets the image file name
+     *
+     * @param imgName String image file name
+     */
+    public void setImgName(String imgName){
+        this.imgName = imgName;
+    }
+
+    /**
      * Retrieves the short quotes of a particular category and loads them into a ListView with
      * the help of a CustomAdapter object.
      *
      * @param list ListView in which to load the short quotes from the database
      */
-    private void loadCategoryShortQuoteFromDb(ListView list, Activity activity){
+    private void loadCategoryShortQuoteFromDb(ListView list, Activity activity, int categoryID,
+                                              String categoryTitle){
         //initialize the list of short quotes
         quoteList = new ArrayList<>();
 
@@ -214,7 +187,8 @@ public class DBHelperUtil {
      *
      * @param activity Activity that requested the data which is the QuoteActivity
      */
-    private void loadQuoteItemFromDb(final Activity activity){
+    private void loadQuoteItemFromDb(final Activity activity, int categoryID,
+                                     int quoteID){
 
         //create the ValueEventListener object
         ValueEventListener listener = new ValueEventListener() {

@@ -71,9 +71,7 @@ public class QuoteListActivity extends Activity {
         * pass the current activity, the ListView in which to load the short quotes, the
         * data String type, the category id selected, the category title selected.
         */
-        dbHelper.retrieveRecordsFromDb(QuoteListActivity.this, list, "quote_short");
-        dbHelper.setCategoryID(categoryID);
-        dbHelper.setCategoryTitle(categoryTitle);
+        dbHelper.retrieveRecordsFromDb(QuoteListActivity.this, list, "quote_short", categoryID, categoryTitle, -1);
         dbHelper.setImgName(img);
     }
 }
