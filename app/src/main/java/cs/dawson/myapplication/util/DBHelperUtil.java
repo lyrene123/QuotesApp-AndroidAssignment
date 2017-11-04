@@ -55,7 +55,7 @@ public class DBHelperUtil {
     //model class to fill up with quote information
     private  QuoteItem quote;
 
-    private Activity activity;
+    //extra information needed for retrieval of specific records from the database
     private int categoryID;
     private String categoryTitle;
     private int quoteID;
@@ -72,18 +72,38 @@ public class DBHelperUtil {
         mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * Sets the String image file name instance
+     *
+     * @param imgName String image file name
+     */
     public void setImgName(String imgName) {
         this.imgName = imgName;
     }
 
+    /**
+     * Sets the category id or index
+     *
+     * @param categoryID int category index
+     */
     public void setCategoryID(int categoryID) {
         this.categoryID = categoryID;
     }
 
+    /**
+     * Sets the category title
+     *
+     * @param categoryTitle String category title
+     */
     public void setCategoryTitle(String categoryTitle) {
         this.categoryTitle = categoryTitle;
     }
 
+    /**
+     * Sets the quote id or index
+     *
+     * @param quoteID int quote index
+     */
     public void setQuoteID(int quoteID) {
         this.quoteID = quoteID;
     }
