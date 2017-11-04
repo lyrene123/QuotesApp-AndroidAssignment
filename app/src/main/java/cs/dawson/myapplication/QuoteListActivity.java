@@ -1,7 +1,7 @@
 package cs.dawson.myapplication;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,7 +20,7 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  * @author Peter Bellefleur
  */
 public class QuoteListActivity extends MenuActivity {
-
+    private final String TAG = "QuoteListActivity";
     //the category that was selected
     private int categoryID;
     private String categoryTitle;
@@ -40,6 +40,7 @@ public class QuoteListActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i(TAG, "onCreate");
 
         //retrieve the name of the category from the intent extras and display in TextView
         TextView categoryTitleTV = (TextView) findViewById(R.id.categoryTitleTV);

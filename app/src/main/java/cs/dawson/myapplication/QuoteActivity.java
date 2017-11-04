@@ -47,7 +47,7 @@ public class QuoteActivity extends MenuActivity {
     private QuoteItem quote;
     private String imgName;
 
-    private static String TAG = "QUOTES-QuoteActivity";
+    private static String TAG = "QuoteActivity";
 
     /**
      * Sets the layout of the view. Retrieves the necessary information from the bundle
@@ -61,6 +61,7 @@ public class QuoteActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quote);
+        Log.i(TAG, "onCreate");
         retrieveHandleToTextViews();
 
         TextView quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
@@ -68,37 +69,40 @@ public class QuoteActivity extends MenuActivity {
         categoryID = 0;
 
 
-        //retrieve quoteTitle Text view and display in it the category name from the bundle
+        //retrieve quoteTitle Text view and display in it the category name from intent extras
         if ( getIntent().hasExtra("category_title") != false &&
                 getIntent().getExtras().getString("category_title") != null) {
             quoteTitleTV.setText(quoteTitleTV.getText()
                     + " " + getIntent().getExtras().getString("category_title"));
         }
 
-        //retrieve the quote id from the bundle
+        //retrieve the quote id from intent extras
         if ( getIntent().hasExtra("quote_index") != false &&
                 getIntent().getExtras().getString("quote_index") != null) {
             quoteID = Integer.parseInt(getIntent().getExtras().getString("quote_index"));
         }
 
-        //retrieve the category id from the bundle
+        //retrieve the category id from intent extras
         if ( getIntent().hasExtra("category_index") != false &&
                 getIntent().getExtras().getString("category_index") != null) {
             categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
         }
 
-        //retrieve the category image from the bundle
+        //retrieve the category image from intent extras
         if ( getIntent().hasExtra("category_img") != false &&
                 getIntent().getExtras().getString("category_img") != null) {
             imgName = getIntent().getExtras().getString("category_img");
         } else {
-            //if the image is not passed to the bundle, then determine the image based on category number
+            //if the image is not passed to the intent,
+            // //then determine the image based on category number
             determineImageFilename();
         }
         
-        //retrieve all quote into, pass the current activity, the data type and set the category id and the quote id
+        //retrieve all quote into, pass the current activity, the data type
+        // and set the category id and the quote id
         dbHelper = new DBHelperUtil();
-        dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
+        dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "",
+                quoteID);
     }
 
     /**
@@ -109,6 +113,7 @@ public class QuoteActivity extends MenuActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i(TAG, "onPause");
 
         //create shared prefs, give it a name so we can refer to it in other Activities
         SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
@@ -118,7 +123,9 @@ public class QuoteActivity extends MenuActivity {
         editor.putString("category_title", getIntent().getExtras().getString("category_title"));
         //we need the indices to pull the specific quote from the database later
         editor.putInt("quote_index", quoteID);
+        Log.d(TAG, "saving quote index: " + quoteID);
         editor.putInt("category_index", categoryID);
+        Log.d(TAG, "saving category index: " + categoryID);
         //save data
         editor.commit();
     }
@@ -133,7 +140,7 @@ public class QuoteActivity extends MenuActivity {
      * @param quote QuoteItem to load into the view
      */
     public void displayQuoteInfoInTextViews(QuoteItem quote){
-
+        Log.i(TAG, "displayQuoteInfoInTextViews");
         //the following is to underline the attributed name
         SpannableString content = new SpannableString(quote.getAttributed());
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
@@ -163,6 +170,7 @@ public class QuoteActivity extends MenuActivity {
      * of the attributed and a dismiss button
      */
     private void displayBlurbDialog(){
+        Log.i(TAG, "displayBlurbDialog");
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.blurb_title);
         builder.setMessage(quote.getBlurb())
@@ -179,6 +187,7 @@ public class QuoteActivity extends MenuActivity {
      * Retrieves a handle of all the necessary TextViews from the view
      */
     private void retrieveHandleToTextViews(){
+        Log.i(TAG, "retrieveHandleToTextViews");
         attributedTV = (TextView) findViewById(R.id.attributedTxt);
         dateTV = (TextView) findViewById(R.id.dateTxt);
         birthdateTV = (TextView) findViewById(R.id.birthdateTxt);
@@ -199,6 +208,7 @@ public class QuoteActivity extends MenuActivity {
      */
     private void addLink(TextView textView, String patternToMatch,
                                final String link) {
+        Log.i(TAG, "addLink");
         Linkify.TransformFilter filter = new Linkify.TransformFilter() {
             @Override public String transformUrl(Matcher match, String url) {
                 return link;
@@ -218,6 +228,7 @@ public class QuoteActivity extends MenuActivity {
      *
      */
     private void loadImageIntoImageView(){
+        Log.i(TAG, "loadImageIntoImageView()");
         //get storage ref for an image
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child(imgName);
@@ -239,6 +250,7 @@ public class QuoteActivity extends MenuActivity {
      * Creates the String image filename depending on the category index or id.
      */
     private void determineImageFilename(){
+        Log.i(TAG, "determineImageFilename");
         switch (categoryID){
             case 1 :
                 imgName = "fuitsvegies.png";
