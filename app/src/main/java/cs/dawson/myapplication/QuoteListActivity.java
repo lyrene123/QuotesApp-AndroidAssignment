@@ -20,7 +20,7 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  * @author Peter Bellefleur
  */
 public class QuoteListActivity extends MenuActivity {
-
+    private final String TAG = "QuoteListActivity";
     //the category that was selected
     private int categoryID;
     private String categoryTitle;
@@ -43,6 +43,7 @@ public class QuoteListActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+<<<<<<< HEAD
         Log.d(TAG, "onCreate of QuoteListActivity launched");
 
         retrieveDataFromIntent();
@@ -67,6 +68,9 @@ public class QuoteListActivity extends MenuActivity {
      */
     private void retrieveDataFromIntent(){
         Log.d(TAG, "retrieveDataFromIntent started");
+=======
+        Log.i(TAG, "onCreate");
+>>>>>>> ebe4cac197eb6b0d3c1d37e3f7a912c44667b497
 
         //retrieve the name of the category from the intent extras and display in TextView
         TextView categoryTitleTV = (TextView) findViewById(R.id.categoryTitleTV);

@@ -1,7 +1,7 @@
 package cs.dawson.myapplication;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import android.util.Log;
 
 /**
  * The AboutActivity class defines an Activity that will display information about the
@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBar;
  */
 
 public class AboutActivity extends MenuActivity {
+    private final String TAG = "AboutActivity";
 
     /**
      * Displays the layout defined in XML layout resources.
@@ -22,5 +23,6 @@ public class AboutActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        Log.i(TAG, "onCreate");
     }
 }

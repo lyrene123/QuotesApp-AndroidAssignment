@@ -1,7 +1,6 @@
 package cs.dawson.myapplication;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -21,8 +20,7 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  * @author Peter Bellefleur
  */
 public class MainActivity extends MenuActivity {
-
-    private static String TAG = "QUOTES-MainActivity";
+    private final String TAG = "MenuActivity";
 
     /**
      * Sets the layout of the activity. Initializes the DBHelper instance
@@ -37,8 +35,7 @@ public class MainActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Log.d(TAG, "onCreate of MainActivity lauched");
+        Log.i(TAG, "onCreate");
 
         //Initialize DBHelper object
         DBHelperUtil dbHelper = new DBHelperUtil();

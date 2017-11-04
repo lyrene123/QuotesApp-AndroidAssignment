@@ -46,7 +46,7 @@ public class QuoteActivity extends MenuActivity {
     private QuoteItem quote;
     private String imgName;
 
-    private static String TAG = "QUOTES-QuoteActivity";
+    private static String TAG = "QuoteActivity";
 
     /**
      * Sets the layout of the view. Retrieves the necessary information from the bundle
@@ -60,16 +60,19 @@ public class QuoteActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quote);
-        Log.d(TAG, "onCreate of QuoteActivity launched");
 
+        Log.i(TAG, "onCreate");
         retrieveHandleToTextViews();
         quoteID = 0;
         categoryID = 0;
+
         retrieveDataFromIntent();
         
-        //retrieve all quote into, pass the current activity, the data type and set the category id and the quote id
+        //retrieve all quote into, pass the current activity, the data type
+        // and set the category id and the quote id
         dbHelper = new DBHelperUtil();
-        dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
+        dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "",
+                quoteID);
     }
 
     /**
@@ -80,7 +83,8 @@ public class QuoteActivity extends MenuActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause of QuoteActivity started");
+
+        Log.i(TAG, "onPause");
 
         //create shared prefs, give it a name so we can refer to it in other Activities
         SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
@@ -90,7 +94,9 @@ public class QuoteActivity extends MenuActivity {
         editor.putString("category_title", getIntent().getExtras().getString("category_title"));
         //we need the indices to pull the specific quote from the database later
         editor.putInt("quote_index", quoteID);
+        Log.d(TAG, "saving quote index: " + quoteID);
         editor.putInt("category_index", categoryID);
+        Log.d(TAG, "saving category index: " + categoryID);
         //save data
         editor.commit();
     }
@@ -105,7 +111,7 @@ public class QuoteActivity extends MenuActivity {
      * @param quote QuoteItem to load into the view
      */
     public void displayQuoteInfoInTextViews(QuoteItem quote){
-        Log.d(TAG, "Displaying quote info in text views");
+        Log.i(TAG, "displayQuoteInfoInTextViews");
 
         //the following is to underline the attributed name
         SpannableString content = new SpannableString(quote.getAttributed());
@@ -142,7 +148,8 @@ public class QuoteActivity extends MenuActivity {
      * of the attributed and a dismiss button
      */
     private void displayBlurbDialog(){
-        Log.d(TAG, "Displaying blurb dialog");
+        Log.i(TAG, "displayBlurbDialog");
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.blurb_title);
         builder.setMessage(quote.getBlurb())
@@ -159,7 +166,8 @@ public class QuoteActivity extends MenuActivity {
      * Retrieves a handle of all the necessary TextViews from the view
      */
     private void retrieveHandleToTextViews(){
-        Log.d(TAG, "Retrieving handle to textviews and imageviews from gui");
+        Log.i(TAG, "retrieveHandleToTextViews");
+
         attributedTV = (TextView) findViewById(R.id.attributedTxt);
         dateTV = (TextView) findViewById(R.id.dateTxt);
         birthdateTV = (TextView) findViewById(R.id.birthdateTxt);
@@ -182,6 +190,7 @@ public class QuoteActivity extends MenuActivity {
      */
     private void addLink(TextView textView, String patternToMatch,
                                final String link) {
+        Log.i(TAG, "addLink");
         Linkify.TransformFilter filter = new Linkify.TransformFilter() {
             @Override public String transformUrl(Matcher match, String url) {
                 return link;
@@ -201,7 +210,8 @@ public class QuoteActivity extends MenuActivity {
      *
      */
     public void loadImageIntoImageView(){
-        Log.d(TAG, "Launching image into image view");
+        Log.i(TAG, "loadImageIntoImageView()");
+        
         //get storage ref for an image
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child(imgName);
@@ -223,6 +233,7 @@ public class QuoteActivity extends MenuActivity {
      * Creates the String image filename depending on the category index or id.
      */
     private void determineImageFilename(){
+        Log.i(TAG, "determineImageFilename");
         switch (categoryID){
             case 1 :
                 imgName = "fuitsvegies.png";
