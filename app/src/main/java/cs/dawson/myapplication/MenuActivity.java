@@ -64,12 +64,12 @@ public class MenuActivity extends AppCompatActivity {
                 Intent randomIntent = new Intent(this, QuoteActivity.class);
                 randomIntent.putExtra("category_index", ((int)(Math.random() * 4) + 1) + "");
                 randomIntent.putExtra("quote_index", ((int)(Math.random() * 3)) + "");
-                randomIntent.putExtra("category_title", "Random Quote");
+                randomIntent.putExtra("category_title", "a random subject");
                 startActivity(randomIntent);
                 return true;
             //last option: display last viewed quote in QuoteActivity
             case R.id.last:
-                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
                 if (prefs.contains("category_title") && prefs.contains("quote_index")
                         && prefs.contains("category_index")) {
                     Intent lastIntent = new Intent(this, QuoteActivity.class);

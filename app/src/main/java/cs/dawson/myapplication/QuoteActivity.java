@@ -90,7 +90,7 @@ public class QuoteActivity extends MenuActivity {
         super.onPause();
         String strTmp;
 
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
         strTmp = quoteTitleTV.getText().toString();
