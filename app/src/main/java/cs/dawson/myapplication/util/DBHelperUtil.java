@@ -77,14 +77,19 @@ public class DBHelperUtil {
      * If not, a dialog will display with an error message letting the user know
      * that an error has occurred
      *
+     * The parameters accepted are data needed to find a specific record from the database.
+     * But not necessarily used by all query methods to the database.
+     *
      * @param activity Activity that needs access to the database
      * @param list ListView that will contain the list of categories or short quotes
      *             (applied for the MainActivity and QuoteListActivity only)
      * @param data String containing the type of data you want to data from the database
-     * @param categoryID the index or id of the category selected needed to retrieve specific data
-     *                   (applied for QuoteActivity and MainActivity)
-     * @param
-     *
+     * @param categoryID the index or id of the category selected needed to retrieve right short quotes
+     *                   (applied for QuoteActivity and QuoteListActivity)
+     * @param categoryTitle the name of the category selected
+     *                      (applied for QuoteListActivity)
+     * @param quoteID the index or id of the quote selected needed to retrieve the right info of quote
+     *                (applied for QuoteActivity)
      */
     public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String data,
                                       final int categoryID, final String categoryTitle, final int quoteID){
@@ -132,6 +137,9 @@ public class DBHelperUtil {
      * the help of a CustomAdapter object.
      *
      * @param list ListView in which to load the short quotes from the database
+     * @param activity The activity requesting for the data
+     * @param categoryID The id of the category selected needed to retrieve the right category record
+     * @param categoryTitle the name of the category selected
      */
     private void loadCategoryShortQuoteFromDb(ListView list, Activity activity, int categoryID,
                                               String categoryTitle){
@@ -190,6 +198,8 @@ public class DBHelperUtil {
      * which is the QuoteActivity.
      *
      * @param activity Activity that requested the data which is the QuoteActivity
+     * @param categoryID the id of the category selected needed to retrieve the right category record
+     * @param quoteID the quote id of the category needed to retrieve the right quote record
      */
     private void loadQuoteItemFromDb(final Activity activity, int categoryID,
                                      int quoteID){
@@ -308,7 +318,8 @@ public class DBHelperUtil {
      * Creates and displays an alert dialog that will display an error message if
      * the authentication sign in to the firebase has failed.
      *
-     * @param task AuthResult task
+     * @param task Authentication task
+     * @param activity The activity trying to access the database
      */
     private void displayErrorAuthentication(Task<AuthResult> task, Activity activity){
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
