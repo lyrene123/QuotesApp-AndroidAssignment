@@ -11,9 +11,6 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +31,6 @@ import cs.dawson.myapplication.util.DBHelperUtil;
 public class QuoteActivity extends MenuActivity {
 
     private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV, quoteTitleTV;
-    private DBHelperUtil dbHelper;
     private QuoteItem quote;
     private int quoteID;
     private int categoryID;
@@ -78,7 +74,7 @@ public class QuoteActivity extends MenuActivity {
         }
 
         //retrieve the info of the quote with the DBHelper instance
-        dbHelper = new DBHelperUtil();
+        DBHelperUtil dbHelper = new DBHelperUtil();
         dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
     }
 
@@ -88,13 +84,11 @@ public class QuoteActivity extends MenuActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        String strTmp;
 
         SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
-        strTmp = quoteTitleTV.getText().toString();
-        editor.putString("category_title", strTmp);
+        editor.putString("category_title", getIntent().getExtras().getString("category_title"));
         editor.putInt("quote_index", quoteID);
         editor.putInt("category_index", categoryID);
 
