@@ -1,6 +1,7 @@
 package cs.dawson.myapplication;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,9 +24,12 @@ public class QuoteListActivity extends MenuActivity {
     //the category that was selected
     private int categoryID;
     private String categoryTitle;
+    private String img;
 
     //for DAO access methods
     private DBHelperUtil dbHelper;
+
+    private static String TAG ="QUOTES-QLActivity";
 
     /**
      * Sets the layout of the view. Retrieves the necessary information from the bundle
@@ -39,6 +43,30 @@ public class QuoteListActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "onCreate of QuoteListActivity launched");
+
+        retrieveDataFromIntent();
+
+        //instantiate the DBHelper instance
+        dbHelper = new DBHelperUtil();
+
+        //retrieve the ListView from the view to load the items into it
+        ListView list = (ListView) findViewById(R.id.listViewCat);
+
+        /*retrieve and load the list of short quotes for the selected category
+        * pass the current activity, the ListView in which to load the short quotes, the
+        * data String type, the category id selected, the category title selected.
+        */
+        dbHelper.retrieveRecordsFromDb(QuoteListActivity.this, list, "quote_short", categoryID, categoryTitle, -1);
+        dbHelper.setImgName(img);
+    }
+
+    /**
+     * Retrieves the necessary data from the Intent object that was passed as
+     * extras. Load the data into their appropriate Widget or instance variable.
+     */
+    private void retrieveDataFromIntent(){
+        Log.d(TAG, "retrieveDataFromIntent started");
 
         //retrieve the name of the category from the intent extras and display in TextView
         TextView categoryTitleTV = (TextView) findViewById(R.id.categoryTitleTV);
@@ -55,23 +83,9 @@ public class QuoteListActivity extends MenuActivity {
         }
 
         //retrieve the image category
-        String img = "";
         if ( getIntent().hasExtra("category_img") != false &&
                 getIntent().getExtras().getString("category_img") != null) {
             img = getIntent().getExtras().getString("category_img");
         }
-
-        //instantiate the DBHelper instance
-        dbHelper = new DBHelperUtil();
-
-        //retrieve the ListView from the view to load the items into it
-        ListView list = (ListView) findViewById(R.id.listViewCat);
-
-        /*retrieve and load the list of short quotes for the selected category
-        * pass the current activity, the ListView in which to load the short quotes, the
-        * data String type, the category id selected, the category title selected.
-        */
-        dbHelper.retrieveRecordsFromDb(QuoteListActivity.this, list, "quote_short", categoryID, categoryTitle, -1);
-        dbHelper.setImgName(img);
     }
 }

@@ -2,6 +2,7 @@ package cs.dawson.myapplication;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.widget.ListView;
 
 
@@ -21,6 +22,8 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  */
 public class MainActivity extends MenuActivity {
 
+    private static String TAG = "QUOTES-MainActivity";
+
     /**
      * Sets the layout of the activity. Initializes the DBHelper instance
      * to be used for the firebase authentication and retrieving the categories
@@ -34,6 +37,8 @@ public class MainActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.d(TAG, "onCreate of MainActivity lauched");
 
         //Initialize DBHelper object
         DBHelperUtil dbHelper = new DBHelperUtil();

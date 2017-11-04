@@ -38,7 +38,7 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  */
 public class QuoteActivity extends MenuActivity {
 
-    private TextView attributedTV, dateTV, birthdateTV, shortQuoteTV, fullquoteTV, refTV;
+    private TextView attributedTV, dateTV, birthdateTV, shortQuoteTV, fullquoteTV, refTV, quoteTitleTV;
     private int quoteID;
     private ImageView imageView;
     private int categoryID;
@@ -60,40 +60,12 @@ public class QuoteActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quote);
-        retrieveHandleToTextViews();
+        Log.d(TAG, "onCreate of QuoteActivity launched");
 
-        TextView quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
+        retrieveHandleToTextViews();
         quoteID = 0;
         categoryID = 0;
-
-
-        //retrieve quoteTitle Text view and display in it the category name from the bundle
-        if ( getIntent().hasExtra("category_title") != false &&
-                getIntent().getExtras().getString("category_title") != null) {
-            quoteTitleTV.setText(quoteTitleTV.getText()
-                    + " " + getIntent().getExtras().getString("category_title"));
-        }
-
-        //retrieve the quote id from the bundle
-        if ( getIntent().hasExtra("quote_index") != false &&
-                getIntent().getExtras().getString("quote_index") != null) {
-            quoteID = Integer.parseInt(getIntent().getExtras().getString("quote_index"));
-        }
-
-        //retrieve the category id from the bundle
-        if ( getIntent().hasExtra("category_index") != false &&
-                getIntent().getExtras().getString("category_index") != null) {
-            categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
-        }
-
-        //retrieve the category image from the bundle
-        if ( getIntent().hasExtra("category_img") != false &&
-                getIntent().getExtras().getString("category_img") != null) {
-            imgName = getIntent().getExtras().getString("category_img");
-        } else {
-            //if the image is not passed to the bundle, then determine the image based on category number
-            determineImageFilename();
-        }
+        retrieveDataFromIntent();
         
         //retrieve all quote into, pass the current activity, the data type and set the category id and the quote id
         dbHelper = new DBHelperUtil();
@@ -108,6 +80,7 @@ public class QuoteActivity extends MenuActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause of QuoteActivity started");
 
         //create shared prefs, give it a name so we can refer to it in other Activities
         SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
@@ -132,6 +105,7 @@ public class QuoteActivity extends MenuActivity {
      * @param quote QuoteItem to load into the view
      */
     public void displayQuoteInfoInTextViews(QuoteItem quote){
+        Log.d(TAG, "Displaying quote info in text views");
 
         //the following is to underline the attributed name
         SpannableString content = new SpannableString(quote.getAttributed());
@@ -168,6 +142,7 @@ public class QuoteActivity extends MenuActivity {
      * of the attributed and a dismiss button
      */
     private void displayBlurbDialog(){
+        Log.d(TAG, "Displaying blurb dialog");
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.blurb_title);
         builder.setMessage(quote.getBlurb())
@@ -184,6 +159,7 @@ public class QuoteActivity extends MenuActivity {
      * Retrieves a handle of all the necessary TextViews from the view
      */
     private void retrieveHandleToTextViews(){
+        Log.d(TAG, "Retrieving handle to textviews and imageviews from gui");
         attributedTV = (TextView) findViewById(R.id.attributedTxt);
         dateTV = (TextView) findViewById(R.id.dateTxt);
         birthdateTV = (TextView) findViewById(R.id.birthdateTxt);
@@ -191,6 +167,7 @@ public class QuoteActivity extends MenuActivity {
         fullquoteTV = (TextView) findViewById(R.id.quoteFullTxt);
         imageView = (ImageView) findViewById(R.id.categoryImg);
         refTV = (TextView) findViewById(R.id.refTxt);
+        quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
     }
 
     /**
@@ -224,6 +201,7 @@ public class QuoteActivity extends MenuActivity {
      *
      */
     public void loadImageIntoImageView(){
+        Log.d(TAG, "Launching image into image view");
         //get storage ref for an image
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child(imgName);
@@ -263,6 +241,44 @@ public class QuoteActivity extends MenuActivity {
                 break;
             default :
                 imgName = "";
+        }
+
+        Log.d(TAG, "created image filename: " + imgName);
+    }
+
+    /**
+     * Retrieves the necessary data from the Intent object that was passed as
+     * extras. Load the data into their appropriate Widget or instance variable.
+     */
+    private void retrieveDataFromIntent(){
+        Log.d(TAG, "retrieveDataFromIntent started");
+
+        //retrieve quoteTitle Text view and display in it the category name from the bundle
+        if ( getIntent().hasExtra("category_title") != false &&
+                getIntent().getExtras().getString("category_title") != null) {
+            quoteTitleTV.setText(quoteTitleTV.getText()
+                    + " " + getIntent().getExtras().getString("category_title"));
+        }
+
+        //retrieve the quote id from the bundle
+        if ( getIntent().hasExtra("quote_index") != false &&
+                getIntent().getExtras().getString("quote_index") != null) {
+            quoteID = Integer.parseInt(getIntent().getExtras().getString("quote_index"));
+        }
+
+        //retrieve the category id from the bundle
+        if ( getIntent().hasExtra("category_index") != false &&
+                getIntent().getExtras().getString("category_index") != null) {
+            categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
+        }
+
+        //retrieve the category image from the bundle
+        if ( getIntent().hasExtra("category_img") != false &&
+                getIntent().getExtras().getString("category_img") != null) {
+            imgName = getIntent().getExtras().getString("category_img");
+        } else {
+            //if the image is not passed to the bundle, then determine the image based on category number
+            determineImageFilename();
         }
     }
 

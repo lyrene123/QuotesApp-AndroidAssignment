@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    style="@style/background_style">
 
     <TextView
         android:id="@+id/quoteTitle"
@@ -61,6 +62,26 @@
                         android:text="@string/birthdate"/>
                     <TextView
                         android:id="@+id/birthdateTxt"
+                        style="@style/textmain_style.quoteStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/quoteShortLbl"
+                        style="@style/textmain_style.quoteStyle.quoteLbl"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/short_quote"/>
+                    <TextView
+                        android:id="@+id/quoteShortTxt"
                         style="@style/textmain_style.quoteStyle"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

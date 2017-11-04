@@ -67,6 +67,7 @@ public class CustomAdapter extends BaseAdapter {
         this.categoryID = categoryID;
         this.categoryTitle = categoryTitle;
 
+        //make activity instance from the Context input data
         if(c instanceof MainActivity)
             this.activity = (MainActivity) c;
         if(c instanceof QuoteListActivity)
