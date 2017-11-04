@@ -2,10 +2,12 @@ package cs.dawson.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.lang.Math;
 
@@ -67,6 +69,18 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
             //last option: display last viewed quote in QuoteActivity
             case R.id.last:
+                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                if (prefs.contains("category_title") && prefs.contains("quote_index")
+                        && prefs.contains("category_index")) {
+                    Intent lastIntent = new Intent(this, QuoteActivity.class);
+                    lastIntent.putExtra("category_index", prefs.getInt("category_index", -1) + "");
+                    lastIntent.putExtra("quote_index", prefs.getInt("quote_index", -1) + "");
+                    lastIntent.putExtra("category_title", prefs.getString("category_title", null));
+                    startActivity(lastIntent);
+                } else {
+                    Toast.makeText(this, "You have not viewed a quote yet!", Toast.LENGTH_LONG)
+                            .show();
+                }
                 return true;
 
             //default: call superclass implementation
