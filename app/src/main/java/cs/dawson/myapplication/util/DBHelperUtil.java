@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import cs.dawson.myapplication.QuoteActivity;
@@ -54,6 +55,14 @@ public class DBHelperUtil {
     //model class to fill up with quote information
     private  QuoteItem quote;
 
+    private Activity activity;
+    private int categoryID;
+    private String categoryTitle;
+    private int quoteID;
+    private String imgName;
+
+    private static String TAG = "QUOTES-QLActivity";
+
     /**
      * Initializes the DatabaseReference object for retrieval of data
      * and the FirebaseAuth for database authentication
@@ -61,6 +70,22 @@ public class DBHelperUtil {
     public DBHelperUtil(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mFirebaseAuth = FirebaseAuth.getInstance();
+    }
+
+    public void setImgName(String imgName) {
+        this.imgName = imgName;
+    }
+
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
+    }
+
+    public void setCategoryTitle(String categoryTitle) {
+        this.categoryTitle = categoryTitle;
+    }
+
+    public void setQuoteID(int quoteID) {
+        this.quoteID = quoteID;
     }
 
     /**
@@ -74,14 +99,8 @@ public class DBHelperUtil {
      * @param list ListView that will contain the list of categories or short quotes
      *             (applied for the MainActivity and QuoteListActivity)
      * @param data String containing the type of data you want to data from the database
-     * @param categoryID the id of the category that was selected and used to data the right
-     *                   the short quotes
-     *                   (for QuoteListActivity and QuoteActivity)
-     * @param categoryTitle the name of the category that was selected
-     *                      (for QuoteListActivity and QuoteActivity)
      */
-    public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String data,
-                                      final int categoryID, final String categoryTitle, final int quoteID){
+    public void retrieveRecordsFromDb(final Activity activity, final ListView list, final String data){
 
         //sign in into firebase to data records from database
         mFirebaseAuth.signInWithEmailAndPassword(email, password)
@@ -96,13 +115,12 @@ public class DBHelperUtil {
 
                             //if the list of category short quotes are the data to data
                             if(data.equalsIgnoreCase("quote_short")){
-                                loadCategoryShortQuoteFromDb(list, activity, categoryID,
-                                        categoryTitle);
+                                loadCategoryShortQuoteFromDb(list, activity);
                             }
 
                             //if a quote and its related info are the data to data
                             if(data.equalsIgnoreCase("quote_item")){
-                                loadQuoteItemFromDb(categoryID, quoteID, activity);
+                                loadQuoteItemFromDb(activity);
                             }
 
                         } else {
@@ -118,12 +136,8 @@ public class DBHelperUtil {
      * the help of a CustomAdapter object.
      *
      * @param list ListView in which to load the short quotes from the database
-     * @param activity The activity that is requesting for the data
-     * @param categoryID the id of the category that was selected and used to display the short quotes
-     * @param categoryTitle the name of the category that was selected
      */
-    private void loadCategoryShortQuoteFromDb(ListView list, Activity activity, int categoryID,
-                                              String categoryTitle){
+    private void loadCategoryShortQuoteFromDb(ListView list, Activity activity){
         //initialize the list of short quotes
         quoteList = new ArrayList<>();
 
@@ -143,7 +157,7 @@ public class DBHelperUtil {
 
                     //add the retrieved short quote into the list of quotes
                     addShortQuoteToList((String)item.child("quote_short").getValue());
-                    Log.d("QUOTES-QLActivity", "Quote-short item is: " +
+                    Log.d(TAG, "Quote-short item is: " +
                             (String)item.child("quote_short").getValue());
 
                     adapter.notifyDataSetChanged();
@@ -157,7 +171,7 @@ public class DBHelperUtil {
              */
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w("QUOTES-QLActivity", "Failed to read value.", databaseError.toException());
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
         };
 
@@ -165,7 +179,9 @@ public class DBHelperUtil {
         mDatabase.child("quotes").child(categoryID+"").addValueEventListener(listener);
 
         //create the adapter and set it to the ListView to inflate the items
-        adapter = new CustomAdapter(activity, quoteList, null, categoryID, categoryTitle);
+        //pass the category image as the only item inside a List
+        adapter = new CustomAdapter(activity, quoteList, new ArrayList<>(Arrays.asList(imgName)),
+                categoryID, categoryTitle);
         list.setAdapter(adapter);
     }
 
@@ -176,11 +192,9 @@ public class DBHelperUtil {
      * calling the displayQuoteInfoInTextViews of the activity that requested the data
      * which is the QuoteActivity.
      *
-     * @param categoryID the id of the category in used the quote to retrieve belongs to
-     * @param quoteID the id of the quote to be retrieved
      * @param activity Activity that requested the data which is the QuoteActivity
      */
-    private void loadQuoteItemFromDb(int categoryID, int quoteID, final Activity activity){
+    private void loadQuoteItemFromDb(final Activity activity){
 
         //create the ValueEventListener object
         ValueEventListener listener = new ValueEventListener() {
@@ -196,7 +210,7 @@ public class DBHelperUtil {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //retrieve and load the quote into a QuoteItem instance
                 setQuoteItem(dataSnapshot.getValue(QuoteItem.class));
-                Log.d("QUOTES-QuoteList", "Retrieved quote item: " + quote.getDate_added());
+                Log.d(TAG, "Retrieved quote item: " + quote.getDate_added());
 
                 //once quote is loaded into a QuoteItem instance, display the quote info
                 if(quote != null){
@@ -211,7 +225,7 @@ public class DBHelperUtil {
              */
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w("QUOTES-MainActivity", "Failed to read value.", databaseError.toException());
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
         };
 
@@ -255,7 +269,7 @@ public class DBHelperUtil {
 
                     //add the retrieved image into the list of images
                     addImageToList((String)item.child("image").getValue());
-                    Log.d("QUOTES-MainActivity", "Category item is: " +
+                    Log.d(TAG, "Category item is: " +
                             (String)item.child("name").getValue());
 
                     adapter.notifyDataSetChanged();
@@ -269,7 +283,7 @@ public class DBHelperUtil {
              */
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w("QUOTES-MainActivity", "Failed to read value.", databaseError.toException());
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
         };
 
@@ -283,6 +297,11 @@ public class DBHelperUtil {
         list.setAdapter(adapter);
     }
 
+    /**
+     * Adds an image file name string into the list of images
+     *
+     * @param imgName String image file name
+     */
     private void addImageToList(String imgName){
         imageList.add(imgName);
     }

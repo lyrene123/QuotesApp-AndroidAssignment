@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         //retrieve and load the category names from the database into the list view
         //pass the current actvity, the ListView in which to load the categories, and String data type
-        dbHelper.retrieveRecordsFromDb(MainActivity.this, list, "category", -1, "", -1);
+        dbHelper.retrieveRecordsFromDb(MainActivity.this, list, "category");
+
     }
 }

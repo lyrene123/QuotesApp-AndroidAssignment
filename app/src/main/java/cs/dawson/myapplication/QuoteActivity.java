@@ -2,13 +2,21 @@ package cs.dawson.myapplication;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,8 +38,12 @@ import cs.dawson.myapplication.util.DBHelperUtil;
 public class QuoteActivity extends Activity {
 
     private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV;
+    private ImageView imageView;
     private DBHelperUtil dbHelper;
     private QuoteItem quote;
+    private String imgName;
+
+    private static String TAG = "QUOTES-QuoteActivity";
 
     /**
      * Sets the layout of the view. Retrieves the necessary information from the bundle
@@ -69,11 +81,18 @@ public class QuoteActivity extends Activity {
             categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
         }
 
-        //retrieve the info of the quote with the DBHelper instance
+        //retrieve the category image from the bundle
+        if ( getIntent().hasExtra("category_img") != false &&
+                getIntent().getExtras().getString("category_img") != null) {
+            imgName = getIntent().getExtras().getString("category_img");
+        }
+
         dbHelper = new DBHelperUtil();
 
-        //pass the current activity, the data type
-        dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item", categoryID, "", quoteID);
+        //retrieve all quote into, pass the current activity, the data type and set the category id and the quote id
+        dbHelper.retrieveRecordsFromDb(QuoteActivity.this, null, "quote_item");
+        dbHelper.setCategoryID(categoryID);
+        dbHelper.setQuoteID(quoteID);
     }
 
     /**
@@ -96,6 +115,7 @@ public class QuoteActivity extends Activity {
         dateTV.setText(quote.getDate_added());
         birthdateTV.setText(quote.getDob());
         fullquoteTV.setText(quote.getQuote_full());
+        loadImageIntoImageView();
 
         //set clickable link
         addLink(refTV, "^Reference", quote.getReference());
@@ -135,6 +155,7 @@ public class QuoteActivity extends Activity {
         dateTV = (TextView) findViewById(R.id.dateTxt);
         birthdateTV = (TextView) findViewById(R.id.birthdateTxt);
         fullquoteTV = (TextView) findViewById(R.id.quoteFullTxt);
+        imageView = (ImageView) findViewById(R.id.categoryImg);
         refTV = (TextView) findViewById(R.id.refTxt);
     }
 
@@ -157,6 +178,33 @@ public class QuoteActivity extends Activity {
         };
         Linkify.addLinks(textView, Pattern.compile(patternToMatch), null, null,
                 filter);
+    }
+
+    /**
+     * Loads an image from the firebase storage. Retrieves a storage reference first
+     * for a particular image name and the help of Glide, load the image retrieved
+     * from storage into an image view.
+     *
+     * Solution based on:
+     * https://github.com/codepath/android_guides/wiki/Displaying-Images-with-the-Glide-Library
+     *
+     */
+    private void loadImageIntoImageView(){
+        //get storage ref for an image
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        StorageReference ref = storageReference.child(imgName);
+        Log.d(TAG, "Loading image: " + imgName);
+
+        //load the image in an ImageView with Glide
+        ref.getDownloadUrl().addOnSuccessListener(QuoteActivity.this, new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d(TAG, "Uri image: " + uri);
+                Glide.with(QuoteActivity.this)
+                        .load(uri)
+                        .into(imageView);
+            }
+        });
     }
 
 }

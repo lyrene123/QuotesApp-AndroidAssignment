@@ -44,6 +44,8 @@ public class CustomAdapter extends BaseAdapter {
     private int categoryID;
     private String categoryTitle;
 
+    private static String TAG = "QUOTES-CustomAdapter";
+
     /**
      * Constructor that will initialize the list of strings, the context,
      * the string name of the activity that created the instance of the custom
@@ -135,28 +137,55 @@ public class CustomAdapter extends BaseAdapter {
             vh.tv = (TextView) row.findViewById(R.id.categoryTV);
             vh.tv.setText(categoriesList.get(position));
 
+            //if MainActivity, retrieve the image view of the category position and display
+            vh.iv = (ImageView) row.findViewById(R.id.catImg);
             if(activity instanceof MainActivity) {
-                Log.d("QUOTES-CustomAdapter", "loading image for category :" +
+                Log.d(TAG, "loading image for category :" +
                         categoriesList.get(position));
-
-                //retrieve the image view and display the category image
-                vh.iv = (ImageView) row.findViewById(R.id.catImg);
                 loadImageIntoImageView(images.get(position), vh.iv);
+            }
+
+            //If QuoteListActivity, retrieve the 1st image only from the image list
+            if(activity instanceof QuoteListActivity){
+                Log.d(TAG, "loading image for one category only");
+                loadImageIntoImageView(images.get(0), vh.iv);
             }
 
             row.setTag(vh);
         } else {
-            //if view already exists, just retrieve info from the tag
+            //if view already exists, just retrieve info from the tag value
             vh = (ViewHolder) view.getTag();
             vh.tv.setText(categoriesList.get(position));
 
+            //if MainActivity, retrieve the image view of the category position and display
             if(activity instanceof MainActivity) {
-                //retrieve the image view and display the category image
-                vh.iv = (ImageView) row.findViewById(R.id.catImg);
                 loadImageIntoImageView(images.get(position), vh.iv);
+            }
+
+            //If QuoteListActivity, retrieve the 1st image only from the image list
+            if(activity instanceof QuoteListActivity){
+                Log.d(TAG, "loading image for one category only");
+
+                loadImageIntoImageView(images.get(0), vh.iv);
             }
         }
 
+        setRowClickListener(row, position);
+
+        return row; //return the view to inflate into the ListView
+    }
+
+    /**
+     * Attaches a click listener on the View and provides an event handler
+     * that is called when the item is clicked. Depending on the activity
+     * instance  that was passed as input to the current adapter instance,
+     * a QuoteListActivity will be launched or the QuoteActivity, passing it
+     * the ncessary information as Extras.
+     *
+     * @param row View object in which to attach the click listener
+     * @param position position of the selected View from the ListView
+     */
+    private void setRowClickListener(View row, final int position){
         //set a click listener
         row.setOnClickListener(new View.OnClickListener() {
             /**
@@ -173,9 +202,10 @@ public class CustomAdapter extends BaseAdapter {
                 if(activity instanceof MainActivity) {
                     Intent i = new Intent(context, QuoteListActivity.class);
                     i.putExtra("category_index", position + "");
-                    Log.d("QUOTES-MainActivity", "category position: " + position);
+                    Log.d(TAG, "category position: " + position);
                     i.putExtra("category_name", categoriesList.get(position));
-                    Log.d("QUOTES-MainActivity", "category name: " + categoriesList.get(position));
+                    Log.d(TAG, "category name: " + categoriesList.get(position));
+                    i.putExtra("category_img", images.get(position));
                     context.startActivity(i);
                 }
 
@@ -186,25 +216,38 @@ public class CustomAdapter extends BaseAdapter {
                     i.putExtra("category_index", categoryID+"");
                     i.putExtra("quote_index", position+"");
                     i.putExtra("category_title", categoryTitle);
+
+                    //only pass the 1st image from the list since it's the only one in the list
+                    i.putExtra("category_img", images.get(0));
                     context.startActivity(i);
                 }
             }
         });
-
-        return row; //return the view to inflate into the ListView
     }
 
-    //https://github.com/codepath/android_guides/wiki/Displaying-Images-with-the-Glide-Library
+
+    /**
+     * Loads an image from the firebase storage. Retrieves a storage reference first
+     * for a particular image name and the help of Glide, load the image retrieved
+     * from storage into an image view.
+     *
+     * Solution based on:
+     * https://github.com/codepath/android_guides/wiki/Displaying-Images-with-the-Glide-Library
+     *
+     * @param imgName String image file name
+     * @param imgView ImageView in which to load the image
+     */
     private void loadImageIntoImageView(String imgName, final ImageView imgView){
+        //get storage ref for an image
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child(imgName);
-        Log.d("QUOTES-CustomAdapter", "Loading image: " + imgName);
+        Log.d(TAG, "Loading image: " + imgName);
 
-
+        //load the image in an ImageView with Glide
         ref.getDownloadUrl().addOnSuccessListener(activity, new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Log.d("QUOTES-CustomeAdapter", "Uri image: " + uri);
+                Log.d(TAG, "Uri image: " + uri);
                 Glide.with(activity)
                         .load(uri)
                         .into(imgView);
