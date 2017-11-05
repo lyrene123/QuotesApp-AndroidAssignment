@@ -2,6 +2,7 @@ package cs.dawson.myapplication;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -37,6 +38,12 @@ public class MenuActivity extends AppCompatActivity {
         //inflate it to display to user
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options, menu);
+
+        //setup the icon beside the app title
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setIcon(R.mipmap.ic_launcher);
+
         Log.i(TAG, "onCreateOptionsMenu");
         return true;
     }
@@ -101,7 +108,7 @@ public class MenuActivity extends AppCompatActivity {
                     Log.d(TAG, "user has not previously viewed a quote, popping Toast");
                     //if not found, no previous data saved - user has not viewed a quote.
                     //display message to user
-                    Toast.makeText(this, "You have not viewed a quote yet!", Toast.LENGTH_LONG)
+                    Toast.makeText(this, "You have not viewed previous quotes yet!", Toast.LENGTH_LONG)
                             .show();
                 }
                 return true;

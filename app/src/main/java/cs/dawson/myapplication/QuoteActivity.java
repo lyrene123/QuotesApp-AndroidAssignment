@@ -1,6 +1,5 @@
 package cs.dawson.myapplication;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -39,18 +38,18 @@ import cs.dawson.myapplication.util.DBHelperUtil;
  */
 public class QuoteActivity extends MenuActivity {
 
-    private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV;
-    private int quoteID;
+    private TextView attributedTV, dateTV, birthdateTV, fullquoteTV, refTV, quoteTitleTV;
+    private int quoteID, categoryID, currentOrientation;
     private ImageView imageView;
-    private int categoryID;
     private DBHelperUtil dbHelper;
     private QuoteItem quote;
     private String imgName;
+    private boolean isRotate;
 
     private static String TAG = "QuoteActivity";
 
     /**
-     * Sets the layout of the view. Retrieves the necessary information from the bundle
+     * Sets the layout of the view. Retrieves the necessary information from the Intent
      * such as the category name, the category id, and quote id which will be used to retrieve the
      * all info of a quote of a category from the database with the help of the DBHelperUtil
      * class.
@@ -61,42 +60,18 @@ public class QuoteActivity extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quote);
+
         Log.i(TAG, "onCreate");
         retrieveHandleToTextViews();
-
-        TextView quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
         quoteID = 0;
         categoryID = 0;
+        currentOrientation = 0;
+        isRotate = false;
 
+        //get current device orientation to be used to determine if user has rotated device
+        this.currentOrientation = getResources().getConfiguration().orientation;
 
-        //retrieve quoteTitle Text view and display in it the category name from intent extras
-        if ( getIntent().hasExtra("category_title") != false &&
-                getIntent().getExtras().getString("category_title") != null) {
-            quoteTitleTV.setText(quoteTitleTV.getText()
-                    + " " + getIntent().getExtras().getString("category_title"));
-        }
-
-        //retrieve the quote id from intent extras
-        if ( getIntent().hasExtra("quote_index") != false &&
-                getIntent().getExtras().getString("quote_index") != null) {
-            quoteID = Integer.parseInt(getIntent().getExtras().getString("quote_index"));
-        }
-
-        //retrieve the category id from intent extras
-        if ( getIntent().hasExtra("category_index") != false &&
-                getIntent().getExtras().getString("category_index") != null) {
-            categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
-        }
-
-        //retrieve the category image from intent extras
-        if ( getIntent().hasExtra("category_img") != false &&
-                getIntent().getExtras().getString("category_img") != null) {
-            imgName = getIntent().getExtras().getString("category_img");
-        } else {
-            //if the image is not passed to the intent,
-            // //then determine the image based on category number
-            determineImageFilename();
-        }
+        retrieveDataFromIntent();
         
         //retrieve all quote into, pass the current activity, the data type
         // and set the category id and the quote id
@@ -109,25 +84,50 @@ public class QuoteActivity extends MenuActivity {
      *  Saves the category title, and the indices necessary to retrieve the quote from the
      *  database, in a SharedPreferences file. This allows the specific quote being viewed to be
      *  retrieved again (via an option in the options menu) after the Activity's lifecycle ends.
+     *  Only save when device is not rotating which also causes the onPause to be called.
      */
     @Override
     protected void onPause() {
         super.onPause();
+
         Log.i(TAG, "onPause");
+        checkOrientationChanged();
 
-        //create shared prefs, give it a name so we can refer to it in other Activities
-        SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+        //Only save when device is not rotating which also causes the onPause to be called.
+        if(!isRotate) {
+            //create shared prefs, give it a name so we can refer to it in other Activities
+            SharedPreferences prefs = getSharedPreferences("QUOTE_INDICES", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
 
-        //retrieve category title from intent extras
-        editor.putString("category_title", getIntent().getExtras().getString("category_title"));
-        //we need the indices to pull the specific quote from the database later
-        editor.putInt("quote_index", quoteID);
-        Log.d(TAG, "saving quote index: " + quoteID);
-        editor.putInt("category_index", categoryID);
-        Log.d(TAG, "saving category index: " + categoryID);
-        //save data
-        editor.commit();
+            //retrieve category title from intent extras
+            editor.putString("category_title", getIntent().getExtras().getString("category_title"));
+            //we need the indices to pull the specific quote from the database later
+            editor.putInt("quote_index", quoteID);
+            Log.d(TAG, "saving quote index: " + quoteID);
+            editor.putInt("category_index", categoryID);
+            Log.d(TAG, "saving category index: " + categoryID);
+            //save data
+            editor.commit();
+        }
+    }
+
+    /**
+     * Retrieves the orientation of the device and compares it with the property orientation
+     * that was set in onCreate method. Both are compared and if orientation has changed, set
+     * the isRotate boolean to true and replace the property orientation with the new orientation
+     * retrieved
+     * <p>
+     * This method of checking orientation is inspired by
+     * https://www.android-examples.com/find-get-current-screen-orientation-in-android-programmatically/
+     */
+    private void checkOrientationChanged() {
+        Log.d(TAG, "checkOrientationChanged method called");
+        int newOrientation = getResources().getConfiguration().orientation;
+        if (this.currentOrientation != newOrientation) {
+            Log.d("DQ", "Orientation changed");
+            this.isRotate = true;
+            this.currentOrientation = newOrientation;
+        }
     }
 
     /**
@@ -141,6 +141,7 @@ public class QuoteActivity extends MenuActivity {
      */
     public void displayQuoteInfoInTextViews(QuoteItem quote){
         Log.i(TAG, "displayQuoteInfoInTextViews");
+
         //the following is to underline the attributed name
         SpannableString content = new SpannableString(quote.getAttributed());
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
@@ -150,9 +151,14 @@ public class QuoteActivity extends MenuActivity {
         dateTV.setText(quote.getDate_added());
         birthdateTV.setText(quote.getDob());
         fullquoteTV.setText(quote.getQuote_full());
-        loadImageIntoImageView();
 
-        //set clickable link
+        /*
+        * Sends a request to the database to authenticate to the database before
+        * being able to retrieve an image from firebase storage
+        * */
+        dbHelper.retrieveRecordsFromDb(this, null, "cat_img", -1, "", -1);
+
+        //set clickable link for the reference
         addLink(refTV, "^Reference", quote.getReference());
 
         //set the popup dialog
@@ -171,6 +177,7 @@ public class QuoteActivity extends MenuActivity {
      */
     private void displayBlurbDialog(){
         Log.i(TAG, "displayBlurbDialog");
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.blurb_title);
         builder.setMessage(quote.getBlurb())
@@ -188,12 +195,14 @@ public class QuoteActivity extends MenuActivity {
      */
     private void retrieveHandleToTextViews(){
         Log.i(TAG, "retrieveHandleToTextViews");
+
         attributedTV = (TextView) findViewById(R.id.attributedTxt);
         dateTV = (TextView) findViewById(R.id.dateTxt);
         birthdateTV = (TextView) findViewById(R.id.birthdateTxt);
         fullquoteTV = (TextView) findViewById(R.id.quoteFullTxt);
         imageView = (ImageView) findViewById(R.id.categoryImg);
         refTV = (TextView) findViewById(R.id.refTxt);
+        quoteTitleTV = (TextView) findViewById(R.id.quoteTitle);
     }
 
     /**
@@ -227,8 +236,9 @@ public class QuoteActivity extends MenuActivity {
      * https://github.com/codepath/android_guides/wiki/Displaying-Images-with-the-Glide-Library
      *
      */
-    private void loadImageIntoImageView(){
+    public void loadImageIntoImageView(){
         Log.i(TAG, "loadImageIntoImageView()");
+
         //get storage ref for an image
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child(imgName);
@@ -269,6 +279,44 @@ public class QuoteActivity extends MenuActivity {
                 break;
             default :
                 imgName = "";
+        }
+
+        Log.d(TAG, "created image filename: " + imgName);
+    }
+
+    /**
+     * Retrieves the necessary data from the Intent object that was passed as
+     * extras. Load the data into their appropriate Widget or instance variable.
+     */
+    private void retrieveDataFromIntent(){
+        Log.d(TAG, "retrieveDataFromIntent started");
+
+        //retrieve quoteTitle Text view and display in it the category name from the Intent
+        if ( getIntent().hasExtra("category_title") != false &&
+                getIntent().getExtras().getString("category_title") != null) {
+            quoteTitleTV.setText(quoteTitleTV.getText()
+                    + " " + getIntent().getExtras().getString("category_title"));
+        }
+
+        //retrieve the quote id from the Itent
+        if ( getIntent().hasExtra("quote_index") != false &&
+                getIntent().getExtras().getString("quote_index") != null) {
+            quoteID = Integer.parseInt(getIntent().getExtras().getString("quote_index"));
+        }
+
+        //retrieve the category id from the Itent
+        if ( getIntent().hasExtra("category_index") != false &&
+                getIntent().getExtras().getString("category_index") != null) {
+            categoryID = Integer.parseInt(getIntent().getExtras().getString("category_index"));
+        }
+
+        //retrieve the category image from the Itent
+        if ( getIntent().hasExtra("category_img") != false &&
+                getIntent().getExtras().getString("category_img") != null) {
+            imgName = getIntent().getExtras().getString("category_img");
+        } else {
+            //if the image is not passed to the Itent, then determine the image based on category number
+            determineImageFilename();
         }
     }
 
