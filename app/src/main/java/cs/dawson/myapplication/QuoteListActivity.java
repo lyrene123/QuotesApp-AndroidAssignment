@@ -31,7 +31,7 @@ public class QuoteListActivity extends MenuActivity {
 
 
     /**
-     * Sets the layout of the view. Retrieves the necessary information from the bundle
+     * Sets the layout of the view. Retrieves the necessary information from the Intent
      * such as the category name and the category id which will be used to retrieve the
      * list of short quotes of a category from the database with the help of the DBHelperUtil
      * class. The data retrieved will be loaded into the ListView and displayed to the user.
