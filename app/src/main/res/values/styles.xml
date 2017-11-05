@@ -8,4 +8,43 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="textmain_style.categorytxt_style">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:paddingTop">@dimen/categorytxt_paddingTop</item>
+        <item name="android:textSize">@dimen/categorytxt_size</item>
+    </style>
+
+    <style name="textmain_style.categorytitle_style">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/categorytitle_size</item>
+        <item name="android:layout_margin">@dimen/categorytitle_margin</item>
+    </style>
+
+    <style name="textmain_style.categorysubtitle_style">
+        <item name="android:layout_marginTop">@dimen/categorysub_margintop</item>
+        <item name="android:layout_marginBottom">@dimen/categorysub_margintop</item>
+        <item name="android:layout_marginLeft">@dimen/categorysub_margintop</item>
+        <item name="android:textSize">@dimen/subtitle_size</item>
+    </style>
+
+
+    <style name="textmain_style">
+        <item name="android:fontFamily">serif-monospace</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/font_color</item>
+    </style>
+
+    <style name="textmain_style.quoteStyle">
+        <item name="android:layout_margin">@dimen/quote_margin</item>
+        <item name="android:textSize">@dimen/quote_size</item>
+    </style>
+
+    <style name="textmain_style.quoteStyle.quoteLbl">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textAlignment">viewEnd</item>
+    </style>
+
+    <style name="background_style">
+        <item name="android:background">@color/background_color</item>
+    </style>
 </resources>
